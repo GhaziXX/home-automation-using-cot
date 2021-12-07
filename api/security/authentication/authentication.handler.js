@@ -5,7 +5,7 @@ const validityTime = process.env.JWT_VALIDITY_TIME_IN_SECONDS || config.jwtValid
 const crypto = require('crypto');
 const fs = require('fs');
 
-const cert = fs.readFileSync(process.env.JWT_KEY || config['jwt-key']);
+const privateKey = fs.readFileSync(process.env.JWT_KEY || config['jwt-key']);
 
 exports.login = (req, res) => {
     try {
@@ -13,7 +13,7 @@ exports.login = (req, res) => {
         let refreshId = req.body.userId + refreshSecret + req.body.jti;
         let salt = crypto.randomBytes(16).toString('base64');
         let hash = crypto.createHmac('sha512', salt).update(refreshId).digest("base64");
-        let token = jwt.sign(req.body, cert, { algorithm: 'RS512'});
+        let token = jwt.sign(req.body, privateKey, { algorithm: 'RS512'});
         let b = Buffer.from(hash);
         let refresh_token = salt+'$'+b.toString('base64');
         res.status(201).send({accessToken: token, refreshToken: refresh_token});

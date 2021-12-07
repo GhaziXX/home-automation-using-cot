@@ -4,7 +4,8 @@ const passport = require('passport'),
         ExtractJWT = require('passport-jwt').ExtractJwt,
         IdentityModel = require('../models/identity.model'),
         fs = require('fs'),
-        pubKey = fs.readFileSync('./tls/privkey.pem'),
+        const config = require('../../main/env.config');
+        pubKey = fs.readFileSync(process.env.KEY_FILE || config['key-file']),
         iss = 'urn:homeautomationcot.me',
         aud = 'urn:*.homeautomationcot.me';
 
