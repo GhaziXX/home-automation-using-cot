@@ -1,43 +1,31 @@
 {
-  "name": "api",
-  "version": "1.0.0",
-  "description": "HomeAutomationCot main server",
-  "main": "server.js",
-  "scripts": {
-    "start": "cross-env NODE_ENV=production node --tls-max-v1.3 --tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256 server",
-    "dev": "cross-env NODE_ENV=development nodemon --tls-max-v1.3 --tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256 server"
-  },
-  "keywords": [
-    "api",
-    "express",
-    "mongodb",
-    "jwt"
-  ],
-  "author": "Ghazi Tounsi - Mohamed Karaa",
-  "license": "MIT",
-  "dependencies": {
-    "argon2": "^0.28.2",
-    "bcrypt": "^5.0.1",
-    "body-parser": "^1.19.0",
-    "connect-mongo": "^4.6.0",
-    "cors": "^2.8.5",
-    "cross-env": "^7.0.3",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "helmet": "^4.6.0",
-    "jsonwebtoken": "^8.5.1",
-    "jwt-simple": "^0.5.6",
-    "moment": "^2.29.1",
-    "moment-timezone": "^0.5.34",
-    "mongoose": "^6.0.13",
-    "mongoose-unique-validator": "^3.0.0",
-    "morgan": "^1.10.0",
-    "passport": "^0.5.0",
-    "passport-jwt": "^4.0.0",
-    "spdy": "^4.0.2",
-    "uuid": "^8.3.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.15"
-  }
+    "name": "wot",
+    "version": "1.0.0",
+    "main": "main/app.js",
+    "scripts": {
+        "start": "nodemon --tls-max-v1.3 --tls-cipher-list=TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256 main/launch.js"
+    },
+    "dependencies": {
+        "argon2": "^0.28.2",
+        "body-parser": "^1.19.0",
+        "debug": "^4.3.2",
+        "ejs": "^3.1.6",
+        "express": "^4.17.1",
+        "helmet": "^4.6.0",
+        "jsonwebtoken": "^8.5.1",
+        "moment": "^2.29.1",
+        "moment-timezone": "^0.5.33",
+        "mongoose": "^6.0.6",
+        "mongoose-unique-validator": "^2.0.3",
+        "passport": "^0.4.1",
+        "passport-jwt": "^4.0.0",
+        "passport-local": "^1.0.0",
+        "spdy": "^4.0.2",
+        "swagger-ui-express": "^4.1.6",
+        "sync-request": "^6.1.0",
+        "uuid": "^8.3.2"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.13"
+    }
 }
