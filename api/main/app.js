@@ -5,6 +5,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 
 const path = require('path');
+require('dotenv').config()
 
 //connect to all databases
 require('./connection.pools')();

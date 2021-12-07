@@ -23,7 +23,8 @@
         "spdy": "^4.0.2",
         "swagger-ui-express": "^4.1.6",
         "sync-request": "^6.1.0",
-        "uuid": "^8.3.2"
+        "uuid": "^8.3.2",
+        "dotenv": "^10.0.0"
     },
     "devDependencies": {
         "nodemon": "^2.0.13"
