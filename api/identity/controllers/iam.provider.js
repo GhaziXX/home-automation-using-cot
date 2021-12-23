@@ -3,11 +3,12 @@ const passport = require('passport'),
         JWTStrategy = require('passport-jwt').Strategy,
         ExtractJWT = require('passport-jwt').ExtractJwt,
         IdentityModel = require('../models/identity.model'),
+        argon2 = require('argon2');
         fs = require('fs'),
         config = require('../../main/env.config'),
-        pubKey = fs.readFileSync(process.env.KEY_FILE || config['key-file']),
+        pubKey = fs.readFileSync(process.env.JWT_KEY || config['jwt-key']),
         iss = 'urn:homeautomationcot.me',
-        aud = 'urn:*.homeautomationcot.me';
+        aud = 'urn:homeautomationcot.me';
 
 passport.use('signUp',
     new LocalStrategy(
@@ -25,11 +26,15 @@ passport.use('signUp',
                 if (identity) {
                     return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
                 } else {
-                    req.body.permissions = 0;
-                    console.log(identity);
-                    console.log(req.body);
+                    req.body.password = await argon2.hash(req.body.password,{
+                        type: argon2.argon2id,
+                        memoryCost: 2 ** 16,
+                        hashLength: 64,
+                        saltLength: 32,
+                        timeCost: 11,
+                        parallelism: 2
+                    });
                     const saved = await IdentityModel.createIdentity(req.body);
-                    console.log("Hello!");
                     return done(null, saved);
                 }
             }catch (e) {
@@ -46,6 +51,7 @@ passport.use('signIn',
             passwordField: 'password'
         },
         async (username, password, done) => {
+            console.log("wsolt")
             try {
                 return done(null,IdentityModel.triggerLogin(username,password));
             } catch (error) {
@@ -64,15 +70,16 @@ passport.use(
             secretOrKey: pubKey,
             jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken()
         },
-        async (token, done) => {
-            IdentityModel.findByUsername(token.sub, function(err, identity) {
+        async (token, next) => {
+            IdentityModel.findById(token.userId).then(function(identity, err) {
                 if (err) {
-                    return done(err, false);
+                    return next(err, false);
                 }
                 if (identity) {
-                    return done(null, identity);
+                    
+                    return next(null ,identity);
                 } else {
-                    return done(null, false);
+                    return next(null, false);
                 }
             });
         }

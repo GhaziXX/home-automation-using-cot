@@ -3,19 +3,18 @@ const Authenticator = require('./authentication/authentication.handler');
 const Validator = require('./authorization/authorization.validation');
 const Authorization = require('../security/authorization/authorization.permission');
 const config = require('../main/env.config');
+const passport = require('passport');
 
 const Master = config.permissionLevels.Master;
-const Member = config.permissionLevels.Member;
-const Surfer = config.permissionLevels.Surfer;
 
 exports.routesConfig = function (app) {
     app.post('/auth/signin', [
+        //passport.authenticate('signIn', { session: false }),
         IdentityChecker.hasAuthValidFields,
         IdentityChecker.isPasswordAndUserMatch,
         Authenticator.login
     ]);
-
-
+    
     app.post('/auth/refresh', [
         Validator.validJWTNeeded,
         Validator.verifyRefreshBodyField,

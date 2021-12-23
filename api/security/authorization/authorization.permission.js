@@ -7,10 +7,13 @@ const Surfer = config.permissionLevels.Surfer;
 
 exports.minimumPermissionLevelRequired = (required_permission_level) => {
     return (req, res, next) => {
-        let user_permission_level = parseInt(req.jwt.roles);
+        let user_permission_level = parseInt(req.user.permissions);
+
         if (user_permission_level & required_permission_level) {
+            console.log("here")
             return next();
         } else {
+            console.log("la")
             return res.status(403).send();
         }
     };
@@ -18,8 +21,8 @@ exports.minimumPermissionLevelRequired = (required_permission_level) => {
 
 exports.onlySameUserOrAdminCanDoThisAction = (req, res, next) => {
 
-    let user_permission_level = parseInt(req.jwt.roles);
-    let userId = req.jwt.userId;
+    let user_permission_level = parseInt(req.user.permissions);
+    let userId = req.user.id;
     if (req.params && req.params.userId && userId === req.params.userId) {
         return next();
     } else {
@@ -33,7 +36,7 @@ exports.onlySameUserOrAdminCanDoThisAction = (req, res, next) => {
 };
 
 exports.sameUserCantDoThisAction = (req, res, next) => {
-    let userId = req.jwt.userId;
+    let userId = req.user.id;
 
     if (req.params.userId !== userId) {
         return next();

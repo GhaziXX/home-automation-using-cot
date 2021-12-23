@@ -32,6 +32,7 @@ exports.isPasswordAndUserMatch = async (req, res, next) => {
             if(!user[0]){
                 res.status(404).send({});
             }else{
+                console.log(user[0])
                 if (await argon2.verify(user[0].password, req.body.password)) {
                     var now = Math.floor(Date.now() / 1000);
                     req.body = {
@@ -59,7 +60,8 @@ exports.isUserStillExistsWithSamePrivileges = (req, res, next) => {
             if(!user[0]){
                 res.status(404).send({});
             }
-            req.body.roles = user[0].permissionLevel;
+
+            req.body.roles = user[0].permissions;
             return next();
         });
 };

@@ -11,7 +11,6 @@ exports.signUp = async (req, res,next) => {
             timeCost: 11,
             parallelism: 2
         });
-        console.log(req.body.password);
         req.body.permissionLevel = 1;
         const saved = await IdentityModel.createIdentity(req.body);
         res.status(201).send({id: saved._id});
@@ -21,6 +20,7 @@ exports.signUp = async (req, res,next) => {
 };
 
 exports.list = (req, res) => {
+
     let limit = req.query.limit && req.query.limit <= 100 ? parseInt(req.query.limit) : 10;
     let page = 0;
     if (req.query) {
@@ -36,7 +36,16 @@ exports.list = (req, res) => {
 };
 
 exports.getById = (req, res) => {
+    
     IdentityModel.findById(req.params.userId)
+        .then((result) => {
+            res.status(200).send(result);
+        });
+};
+
+exports.getProfileById = (req, res) => {
+    
+    IdentityModel.findById(req.user.id)
         .then((result) => {
             res.status(200).send(result);
         });

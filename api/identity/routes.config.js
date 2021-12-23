@@ -1,7 +1,9 @@
 const IdentityProvider = require('./controllers/identity.provider');
 const AuthorizationPermission = require('../security/authorization/authorization.permission');
+const AuthorizationValidator =require("../security/authorization/authorization.validation.js")
 
 const  passport = require('passport'),
+        IdentityModel = require('./models/identity.model'),
         jwt = require('jsonwebtoken'),
         {v4: uuidv4 } = require('uuid'),
         config = require('../main/env.config');
@@ -15,30 +17,32 @@ const       Master = config.permissionLevels.Master,
             validityTime = process.env.JWT_VALIDITY_TIME_IN_SECONDS || config.jwtValidityTimeInSeconds;
 
 exports.routesConfig = function (app) {
-    app.post('/users',
+    app.post('/auth/signup',
         [
             passport.authenticate('signUp', { session: false }),
             async (req, res, next) => {
                 res.location('/users/' + req.user._id);
-                res.status(201).send(req.user);
+                res.status(201).send({"id":req.user["id"]});
             }
         ]
-        
     );
-    app.post('/auth/signup',
-        [
-            IdentityProvider.signUp
-        ]
-    );
-
+    
     app.get('/users', [
-        passport.authenticate('jwt', { session: false }, ()=>{}),
-        AuthorizationPermission.minimumPermissionLevelRequired(Member),
+        passport.authenticate('jwt', { session: false }), 
+        AuthorizationPermission.minimumPermissionLevelRequired(Master),
         IdentityProvider.list
+        
     ]);
+
+    app.get('/profile', [
+        passport.authenticate('jwt', { session: false }), 
+        AuthorizationPermission.minimumPermissionLevelRequired(Master),
+        IdentityProvider.getProfileById
+        
+    ]);
+
     app.get('/users/:userId', [
-        passport.authenticate('jwt', { session: false }, ()=>{}),
-        AuthorizationPermission.minimumPermissionLevelRequired(Surfer),
+        passport.authenticate('jwt', { session: false }), 
         AuthorizationPermission.onlySameUserOrAdminCanDoThisAction,
         IdentityProvider.getById
     ]);
@@ -51,7 +55,7 @@ exports.routesConfig = function (app) {
      * Thus this is a privileged action done only by administrator
      */
     app.put('/users/:userId', [
-        passport.authenticate('jwt', { session: false }, ()=>{}),
+        passport.authenticate('jwt', { session: false }),
         AuthorizationPermission.minimumPermissionLevelRequired(Master),
         AuthorizationPermission.sameUserCantDoThisAction,
         IdentityProvider.putById
@@ -82,42 +86,4 @@ exports.routesConfig = function (app) {
 
     });
 */
-    app.post('/oauth/token',
-        async (req, res, next) => {
-            passport.authenticate(
-                'signIn',
-                async (err, user, info) => {
-                    try {
-                        if (err || !user) {
-                            return next(err);
-                        }
-                        req.login(
-                            user,
-                            { session: false },
-                            async (error) => {
-                                if (error) return next(error);
-                                const now = Math.floor(Date.now() / 1000),
-                                    body = {
-                                        iss: iss,
-                                        aud: aud,
-                                        sub: user.username,
-                                        name: user.fullName,
-                                        userId: user._id,
-                                        roles: user.permissionLevel,
-                                        jti: uuidv4(),
-                                        iat: now,
-                                        exp: now+validityTime
-                                    };
-                                const token = jwt.sign({ user: body }, privateKey,{ algorithm: 'RS512'});
-
-                                return res.json({ token });
-                            }
-                        );
-                    } catch (error) {
-                        return next(error);
-                    }
-                }
-            )(req, res, next);
-        }
-    );
 };

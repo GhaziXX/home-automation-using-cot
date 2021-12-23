@@ -29,7 +29,12 @@ exports.triggerLogin = (username, password) => {
 }
 
 exports.findByEmail = (email) => {
-    return Identity.find({email: email});
+    try{
+        identity = Identity.find({email: email});
+    }catch(err){
+        console.log(err)
+    }
+    return identity
 };
 
 exports.findById = (id) => {
