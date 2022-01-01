@@ -1,35 +1,37 @@
 const jwt = require('jsonwebtoken'),
     refreshSecret = require('../../main/env.config.js').actualRefreshSecret,
     crypto = require('crypto');
-    fs = require('fs');
+fs = require('fs');
 
 const config = require('../../main/env.config');
 const cert = fs.readFileSync(process.env.CERT_FILE || config['jwt-key']);
 
 exports.validJWTNeeded = (req, res, next) => {
     if (req.headers['authorization']) {
-        try {
-            let authorization = req.headers['authorization'].split(' ');
-            if (authorization[0] !== 'Bearer') {
-                
-                return res.status(401).send();
-            } else {
-                
-                var aud = 'urn:'+(req.get('origin')?req.get('origin'):"homeautomationcot.me");
-                try{
-                    req.jwt = jwt.verify(authorization[1], cert, {issuer:"urn:homeautomationcot.me",audience:aud,algorithms: ['RS512']});
-                    // console.log(req.jwt)
-                }catch(err){
-                    // console.log(err)
-                }
-                
-                return next();
-            }
-        } catch (err) {
-            return res.status(403).send();
+        let authorization = req.headers['authorization'].split(' ');
+        if (authorization[0] !== 'Bearer') {
+            return res.status(401).send({
+                ok: false,
+                message: 'Unauthorized'
+            });
+        } else {
+
+            var aud = 'urn:' + (req.get('origin') ? req.get('origin') : "homeautomationcot.me");
+
+            req.jwt = jwt.verify(authorization[1], cert, {
+                issuer: "urn:homeautomationcot.me",
+                audience: aud,
+                algorithms: ['RS512']
+            });
+            // console.log(req.jwt)
+            return next();
+
         }
     } else {
-        return res.status(403).send();
+        return res.status(403).send({
+            ok: false,
+            message: 'No authorization token'
+        });
     }
 };
 
@@ -37,7 +39,10 @@ exports.verifyRefreshBodyField = (req, res, next) => {
     if (req.body && req.body.refresh_token) {
         return next();
     } else {
-        return res.status(400).send({error: 'need to pass refresh_token field'});
+        return res.status(400).send({
+            ok: false,
+            message: 'need to pass refresh_token field'
+        });
     }
 };
 
@@ -52,6 +57,9 @@ exports.validRefreshNeeded = (req, res, next) => {
         req.body = req.jwt;
         return next();
     } else {
-        return res.status(400).send({error: 'Invalid refresh token'});
+        return res.status(400).send({
+            ok: false,
+            message: 'Invalid refresh token'
+        });
     }
 };

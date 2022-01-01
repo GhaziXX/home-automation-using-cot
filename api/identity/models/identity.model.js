@@ -1,16 +1,13 @@
 const Identity = require('mongoose').model('Identity');
 
+//// Find user by username
 exports.findByUsername = (username) => {
-    Identity.findOne().byUsername(username).exec((err, identity) => {
-        if(err){
-            throw err;
-        }
-        return identity;
-    });
+    return Identity.findByUsername(username);
 }
 
+//// Trigger login action
 exports.triggerLogin = (username, password) => {
-    Identity.attemptAuthenticate(username, password, (err,identity,reason) => {
+    Identity.attemptAuthenticate(username, password, (err, identity, reason) => {
         if (err) throw err;
         // login was successful if we have an identity
         if (identity) {
@@ -28,15 +25,19 @@ exports.triggerLogin = (username, password) => {
     });
 }
 
+//// Find user by email
 exports.findByEmail = (email) => {
-    try{
-        identity = Identity.find({email: email});
-    }catch(err){
+    try {
+        identity = Identity.find({
+            email: email
+        });
+    } catch (err) {
         console.log(err)
     }
     return identity
 };
 
+//// Find user by id
 exports.findById = (id) => {
     return Identity.findById(id)
         .then((result) => {
@@ -47,11 +48,14 @@ exports.findById = (id) => {
         });
 };
 
+//// Create new user
 exports.createIdentity = (identityData) => {
     const identity = new Identity(identityData);
     return identity.save();
 };
 
+
+//// List all users
 exports.list = (perPage, page) => {
     return new Promise((resolve, reject) => {
         Identity.find()
@@ -67,21 +71,24 @@ exports.list = (perPage, page) => {
     });
 };
 
-exports.putIdentity = (id,identityData) => {
+//// Put identity by id
+exports.putIdentity = (id, identityData) => {
     return new Promise((resolve, reject) => {
-        Identity.findByIdAndUpdate(id,identityData,function (err,user) {
+        Identity.findByIdAndUpdate(id, identityData, function (err, user) {
             if (err) reject(err);
             resolve(user);
         });
     });
 };
 
+
+//// Patch Identity
 exports.patchIdentity = (id, userData) => {
     return new Promise((resolve, reject) => {
         Identity.findById(id, function (err, user) {
             if (err) reject(err);
             for (let i in userData) {
-                if(i === 'permissions' || i === 'password'){
+                if (i === 'permissions' || i === 'password') {
                     continue;
                 }
                 user[i] = userData[i];
@@ -95,9 +102,12 @@ exports.patchIdentity = (id, userData) => {
 
 };
 
+//// Remove by id
 exports.removeById = (userId) => {
     return new Promise((resolve, reject) => {
-        Identity.remove({_id: userId}, (err) => {
+        Identity.remove({
+            _id: userId
+        }, (err) => {
             if (err) {
                 reject(err);
             } else {

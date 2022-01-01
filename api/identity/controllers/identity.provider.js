@@ -1,24 +1,7 @@
 const IdentityModel = require('../models/identity.model');
 const argon2 = require('argon2');
 
-exports.signUp = async (req, res,next) => {
-    try {
-        req.body.password = await argon2.hash(req.body.password,{
-            type: argon2.argon2id,
-            memoryCost: 2 ** 16,
-            hashLength: 64,
-            saltLength: 32,
-            timeCost: 11,
-            parallelism: 2
-        });
-        req.body.permissionLevel = 1;
-        const saved = await IdentityModel.createIdentity(req.body);
-        res.status(201).send({id: saved._id});
-    } catch (err) {
-        return next(err);
-    }
-};
-
+//// List all users in the database
 exports.list = (req, res) => {
 
     let limit = req.query.limit && req.query.limit <= 100 ? parseInt(req.query.limit) : 10;
@@ -31,53 +14,71 @@ exports.list = (req, res) => {
     }
     IdentityModel.list(limit, page)
         .then((result) => {
-            res.status(200).send(result);
+            res.status(200).send({ok:true, message: result});
         })
 };
 
+//// Get user by ID
 exports.getById = (req, res) => {
-    
+
     IdentityModel.findById(req.params.userId)
         .then((result) => {
-            res.status(200).send(result);
+            res.status(200).send({ok:true, message: result});
         });
 };
 
+//// Get current profile
 exports.getProfileById = (req, res) => {
-    
+
     IdentityModel.findById(req.user.id)
         .then((result) => {
-            res.status(200).send(result);
+            let profile = {
+                "forename": result.forename,
+                "surname": result.surname,
+                "email": result.email,
+                "username": result.username,
+                "permissions": result.permissions,
+                "fullName": result.forename + ' ' + result.surname,
+                "id": result.id
+            }
+            res.status(200).send({ok:true, message: profile});
         });
 };
 
+//// Put User by id
 exports.putById = (req, res) => {
     if (req.body.password) {
         let salt = crypto.randomBytes(16).toString('base64');
-        let hash = crypto.scryptSync(req.body.password,salt,64,{N:16384}).toString("base64");
+        let hash = crypto.scryptSync(req.body.password, salt, 64, {
+            N: 16384
+        }).toString("base64");
         req.body.password = salt + "$" + hash;
     }
     IdentityModel.putIdentity(req.params.userId, req.body)
-        .then((result)=>{
-            req.status(204).send({});
+        .then((result) => {
+            req.status(204).send({ok: true});
         });
 };
 
+//// Patch user by id
 exports.patchById = (req, res) => {
     if (req.body.password) {
         let salt = crypto.randomBytes(16).toString('base64');
-        let hash = crypto.scryptSync(req.body.password,salt,64,{N:16384}).toString("base64");
+        let hash = crypto.scryptSync(req.body.password, salt, 64, {
+            N: 16384
+        }).toString("base64");
         req.body.password = salt + "$" + hash;
     }
     IdentityModel.patchIdentity(req.params.userId, req.body)
         .then((result) => {
-            res.status(204).send({});
+            res.status(204).send({ok:true});
         });
 };
 
+//// Remove user by id
 exports.removeById = (req, res) => {
     IdentityModel.removeById(req.params.userId)
-        .then((result)=>{
-            res.status(204).send({});
+        .then((result) => {
+            res.status(204).send({ok:true});
         });
 };

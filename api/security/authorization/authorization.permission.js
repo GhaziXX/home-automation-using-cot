@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken'), 
-config = require('../../main/env.config');
+const jwt = require('jsonwebtoken'),
+    config = require('../../main/env.config');
 
 const Master = config.permissionLevels.Master;
 const Member = config.permissionLevels.Member;
@@ -10,11 +10,12 @@ exports.minimumPermissionLevelRequired = (required_permission_level) => {
         let user_permission_level = parseInt(req.user.permissions);
 
         if (user_permission_level & required_permission_level) {
-            console.log("here")
             return next();
         } else {
-            console.log("la")
-            return res.status(403).send();
+            return res.status(403).send({
+                ok: false,
+                message: 'User does not have the required permissions'
+            });
         }
     };
 };
@@ -29,7 +30,10 @@ exports.onlySameUserOrAdminCanDoThisAction = (req, res, next) => {
         if (user_permission_level & Master) {
             return next();
         } else {
-            return res.status(403).send();
+            return res.status(403).send({
+                ok: false,
+                message: 'User does not have the required permissions'
+            });
         }
     }
 
@@ -41,7 +45,10 @@ exports.sameUserCantDoThisAction = (req, res, next) => {
     if (req.params.userId !== userId) {
         return next();
     } else {
-        return res.status(400).send();
+        return res.status(400).send({
+            ok: false,
+            message: 'User does not have the required permissions'
+        });
     }
 
 };
