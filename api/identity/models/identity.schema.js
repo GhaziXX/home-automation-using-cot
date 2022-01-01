@@ -47,7 +47,8 @@ const identitySchema = new Schema({
     },
     lockUntil: {
         type: Number
-    }
+    },
+    
 }, {
     toObject: {
         virtuals: true
@@ -59,7 +60,7 @@ const identitySchema = new Schema({
 });
 
 identitySchema.virtual('fullName')
-    .get(() => {
+    .get(function () {
         return this.forename + ' ' + this.surname;
     })
     .set((v) => {
@@ -146,61 +147,17 @@ identitySchema.methods.checkPassword = async function (candidatePassword) {
     return await argon2.verify(identity.password, candidatePassword);
 };
 
-identitySchema.statics.attemptAuthenticate = function (username, password, cb) {
-    this.findOne().byUsername(username).exec((err, identity) => {
-        if (err) return cb(err);
-
-        // make sure the identity exists
-        if (!identity) {
-            return cb(null, null, reasons.NOT_FOUND);
-        }
-
-        // check if the account is currently locked
-        if (identity.isLocked) {
-            // just increment login attempts if account is already locked
-            return identity.incLoginAttempts(function (err) {
-                if (err) return cb(err);
-                return cb(null, null, reasons.MAX_ATTEMPTS);
-            });
-        }
-        // check if the password is a match
-        identity.checkPassword(password).then((isMatch) => {
-            if (isMatch) {
-                // if there's no lock or failed attempts, just return the identity
-                if (!identity.loginAttempts && !identity.lockUntil) return cb(null, identity);
-                // reset attempts and lock info
-                let updates = {
-                    $set: {
-                        loginAttempts: 0
-                    },
-                    $unset: {
-                        lockUntil: 1
-                    }
-                };
-                return identity.updateOne(updates, (err) => {
-                    if (err) return cb(err);
-                    return cb(null, identity);
-                });
-            }
-            // password is incorrect, so increment login attempts before responding
-            identity.incLoginAttempts((err) => {
-                if (err) return cb(err);
-                return cb(null, null, reasons.PASSWORD_INCORRECT);
-            });
-        }).catch(() => {
-            // password is incorrect, so increment login attempts before responding
-            identity.incLoginAttempts((err) => {
-                if (err) return cb(err);
-                return cb(null, null, reasons.PASSWORD_INCORRECT);
-            });
-        });
-    });
-};
-
 //// Find user by username
 identitySchema.statics.findByUsername = (username) => {
     return mongoose.model("Identity", identitySchema).find({
         username: username
+    });
+};
+
+//// Find user by email
+identitySchema.statics.findByEmail = (email) => {
+    return mongoose.model("Identity", identitySchema).find({
+        email: email
     });
 };
 

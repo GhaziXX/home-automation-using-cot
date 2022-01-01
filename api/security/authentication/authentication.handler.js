@@ -4,6 +4,7 @@ const config = require('../../main/env.config');
 const validityTime = process.env.JWT_VALIDITY_TIME_IN_SECONDS || config.jwtValidityTimeInSeconds;
 const crypto = require('crypto');
 const fs = require('fs');
+const IdentityModel = require("../../identity/models/identity.model")
 
 const privateKey = fs.readFileSync(process.env.JWT_KEY || config['jwt-key']);
 
@@ -172,3 +173,8 @@ exports.resetRefreshSecret = (req, res) => {
         });
     }
 };
+
+
+exports.test = (req, res) => {
+    IdentityModel.triggerLogin(req.body.username, req.body.password).then((t) => {});
+}

@@ -65,7 +65,26 @@ exports.isPasswordAndUserMatch = async (req, res, next) => {
                     message: 'User does not exists'
                 });
             } else {
+                if (user[0].isLocked) {
+                    // just increment login attempts if account is already locked
+                    user[0].incLoginAttempts(function (err) {});
+                    return res.status(400).send({
+                        ok: false,
+                        message: 'Account temporarily locked'
+                    });
+                }
                 if (await argon2.verify(user[0].password, req.body.password)) {
+                    if (!(!user[0].loginAttempts && !user[0].lockUntil)) {
+                        let updates = {
+                            $set: {
+                                loginAttempts: 0
+                            },
+                            $unset: {
+                                lockUntil: 1
+                            }
+                        };
+                        user[0].updateOne(updates, (err) => {});
+                    }
                     var now = Math.floor(Date.now() / 1000);
                     req.body = {
                         iss: 'urn:homeautomationcot.me',
@@ -81,10 +100,16 @@ exports.isPasswordAndUserMatch = async (req, res, next) => {
                     };
                     return next();
                 } else {
-                    return res.status(400).send({
-                        ok: false,
-                        message: 'Invalid e-mail or password'
+                    user[0].incLoginAttempts((err) => {
+                        return res.status(400).send({
+                            ok: false,
+                            message: 'Invalid e-mail or password'
+                        });
                     });
+                    // return res.status(400).send({
+                    //     ok: false,
+                    //     message: 'Invalid e-mail or password'
+                    // });
                 }
             }
         });

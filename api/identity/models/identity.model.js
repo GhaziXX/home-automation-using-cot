@@ -5,26 +5,6 @@ exports.findByUsername = (username) => {
     return Identity.findByUsername(username);
 }
 
-//// Trigger login action
-exports.triggerLogin = (username, password) => {
-    Identity.attemptAuthenticate(username, password, (err, identity, reason) => {
-        if (err) throw err;
-        // login was successful if we have an identity
-        if (identity) {
-            return identity;
-        }
-        // otherwise we can determine why we failed
-        const reasons = Identity.failedLogin;
-        switch (reason) {
-            case reasons.NOT_FOUND:
-            case reasons.PASSWORD_INCORRECT:
-                throw new Error('Sign In failed');
-            case reasons.MAX_ATTEMPTS:
-                throw new Error('Account temporarily locked');
-        }
-    });
-}
-
 //// Find user by email
 exports.findByEmail = (email) => {
     try {
