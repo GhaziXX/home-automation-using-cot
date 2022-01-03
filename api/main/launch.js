@@ -63,6 +63,6 @@ server.listen(PORT, (error) => {
     if (error) {
         console.log("An error occured", error);
     } else {
-        console.log("Succesfully connected");
+        console.log("Server Succesfully connected");
     }
 });

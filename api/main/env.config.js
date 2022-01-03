@@ -13,6 +13,8 @@ module.exports = {
         'Surfer': 2
     },
     "initRefreshSecret": function () {
-        this.refreshSectret = this.actualRefreshSecret.concat("$" + new Date(Date.now()).toISOString())
+        this.actualRefreshSecret = this.actualRefreshSecret.concat("$" + new Date(Date.now()).toISOString())
     },
+    "mqtt-broker":"mqtts://mqtt.homeautomationcot.me/",
+    "mqtt-port": 8883,
 }

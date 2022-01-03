@@ -29,7 +29,6 @@ exports.getById = (req, res) => {
 
 //// Get current profile
 exports.getProfileById = (req, res) => {
-
     IdentityModel.findById(req.user.id)
         .then((result) => {
             let profile = {

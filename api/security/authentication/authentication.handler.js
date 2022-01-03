@@ -82,7 +82,6 @@ exports.postLogin = (req, res) => {
             let hash = base64Encode(crypto.createHash('sha256').update(authorizationData[1]).digest());
             if (this.challenges.hasOwnProperty(hash)) {
                 if (this.codes[this.challenges[hash]] === authorizationData[0]) {
-                    this.codes[this.challenges[hash]] = null;
                     delete this.codes[this.challenges[hash]];
                     try {
                         let body = this.identities[authorizationData[0]];
@@ -173,8 +172,3 @@ exports.resetRefreshSecret = (req, res) => {
         });
     }
 };
-
-
-exports.test = (req, res) => {
-    IdentityModel.triggerLogin(req.body.username, req.body.password).then((t) => {});
-}
