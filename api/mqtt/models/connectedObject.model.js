@@ -10,6 +10,10 @@ exports.findByRoomId = (roomId) => {
     return ConnectedObject.findByRoomId(roomId);
 };
 
+//// Find user by room
+exports.findByPin = (pin) => {
+    return ConnectedObject.findByPin(pin);
+};
 
 //// Create new ConnectedObject
 exports.createConnectedObject = (sensorData) => {

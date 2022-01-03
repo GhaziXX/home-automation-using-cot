@@ -7,7 +7,7 @@ const ConnectedObjectSchema = new Schema({
         type: String,
         lowercase: true,
         index: {
-            unique: true,
+            unique: false,
         },
         required: [true, "Room cannot be empty"],
     },
@@ -19,6 +19,13 @@ const ConnectedObjectSchema = new Schema({
         },
         required: [true, "Sensor cannot be empty"],
     },
+    pin:{
+        type: Number,
+        index: {
+            unique: true,
+        },
+        required: [true, "Sensor pin cannot be empty"],
+    }
 
 }, {
     toObject: {
@@ -34,6 +41,12 @@ const ConnectedObjectSchema = new Schema({
 ConnectedObjectSchema.statics.findBySensorId = (sensorid) => {
     return mongoose.model("ConnectedObject", ConnectedObjectSchema).find({
         sensorId: sensorid
+    });
+};
+
+ConnectedObjectSchema.statics.findByPin = (pin) => {
+    return mongoose.model("ConnectedObject", ConnectedObjectSchema).find({
+        pin: pin
     });
 };
 

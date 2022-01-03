@@ -10,7 +10,9 @@ exports.hasConnectedObjectValidFields = (req, res, next) => {
         if (!req.body.sensorId) {
             errors.push('Missing sensorId field');
         }
-
+        if (!req.body.pin) {
+            errors.push('Missing pin field');
+        }
         if (errors.length) {
             return res.status(400).send({
                 ok: false,
@@ -41,7 +43,8 @@ exports.isSensorExists = (req, res, next) => {
             } else {
                 ConnectedObjectModel.createConnectedObject({
                     "roomId": req.body.roomId,
-                    "sensorId": sensorId
+                    "sensorId": sensorId,
+                    "pin": req.body.pin,
                 }).then(() => {
                     return next();
                 });
