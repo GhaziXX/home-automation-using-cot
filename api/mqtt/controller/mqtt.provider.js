@@ -98,7 +98,7 @@ exports.performSetAction = async (req, res) => {
 exports.performGetAction = (req, res) => {
   topic = req.body.roomId + "/" + req.body.sensorId
   client.publish(topic, JSON.stringify({
-    "on": true
+    "on": null
   }), {
     qos: 2
   });
