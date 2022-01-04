@@ -41,7 +41,7 @@ exports.list = (perPage, page) => {
 //// Remove by sensorId
 exports.removeBySensorId = (sensorId) => {
     return new Promise((resolve, reject) => {
-        ConnectedObject.remove({
+        ConnectedObject.deleteOne({
             sensorId: sensorId
         }, (err) => {
             if (err) {

@@ -15,7 +15,16 @@ exports.routesConfig = function (app) {
         AuthorizationPermission.minimumPermissionLevelRequired(Master),
         ConnectedObjectPermission.hasConnectedObjectValidFields,
         ConnectedObjectPermission.isSensorExists,
-        Mqtt.addRule
+        Mqtt.addObject
+    ]);
+
+    app.post('/mqtt/removeObject', [
+        passport.authenticate('jwt', {
+            session: false
+        }),
+        AuthorizationPermission.minimumPermissionLevelRequired(Master),
+        ConnectedObjectPermission.hasConnectedObjectValidFields,
+        Mqtt.removeObject
     ]);
 
     app.post('/mqtt/setState', [

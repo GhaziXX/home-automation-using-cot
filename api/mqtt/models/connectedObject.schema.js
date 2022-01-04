@@ -22,7 +22,7 @@ const ConnectedObjectSchema = new Schema({
     pin:{
         type: Number,
         index: {
-            unique: true,
+            unique: false,
         },
         required: [true, "Sensor pin cannot be empty"],
     }
