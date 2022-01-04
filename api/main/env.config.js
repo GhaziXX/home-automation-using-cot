@@ -4,7 +4,7 @@ module.exports = {
     'dh-strongfile': 'tls/dhparam.pem',
     'jwt-key': 'tls/jwtRS256.key',
     'jwt-public-key': 'tls/jwtRS256.key.pub',
-    'main_db_url': "mongodb+srv://homeautomationcot:Homeautomationcot@cluster0.gipho.mongodb.net/users?retryWrites=true&w=majority",
+    'main_db_url': "",
     'jwtValidityTimeInSeconds': 36000,
     'actualRefreshSecret': "refreshme",
     'permissionLevels': {
@@ -17,4 +17,6 @@ module.exports = {
     },
     "mqtt-broker":"mqtts://mqtt.homeautomationcot.me/",
     "mqtt-port": 8883,
+    "mqtt-username": "",
+    "mqtt-password": ""
 }

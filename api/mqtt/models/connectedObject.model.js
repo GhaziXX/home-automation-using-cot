@@ -15,6 +15,16 @@ exports.findByPin = (pin) => {
     return ConnectedObject.findByPin(pin);
 };
 
+//// Find user by room
+exports.listRooms = () => {
+    return ConnectedObject.listRooms();
+};
+
+//// Update sensor value
+exports.updateSensorValue = (roomId, sensorId, value) => {
+    return ConnectedObject.updateSensorValue(roomId, sensorId, value);
+};
+
 //// Create new ConnectedObject
 exports.createConnectedObject = (sensorData) => {
     const sensor = new ConnectedObject(sensorData);

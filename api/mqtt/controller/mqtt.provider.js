@@ -4,17 +4,23 @@ const MqttDispatcher = require('mqtt-dispatcher')
 const ConnectObjectModel = require('../models/connectedObject.model');
 
 
-const client = mqtt.connect(config['mqtt-broker'] + ":" + config['mqtt-port']);
+const client = mqtt.connect(config['mqtt-broker'] + ":" + config['mqtt-port'], {
+  // Clean session
+  clean: true,
+  // Auth
+  username: process.env.MQTT_USERNAME || config['mqtt-username'],
+  password: process.env.MQTT_PASSWORD || config['mqtt-password'],
+});
 const dispatcher = new MqttDispatcher(client)
 
 client.on('connect', () => console.log('MQTT Server connected'));
 
-this.objects = {}
-
-ConnectObjectModel.list(50, 0).then((resp) => {
+ConnectObjectModel.list(30, 0).then((resp) => {
   resp.forEach(element => {
-    dispatcher.addRule(element.sensorId, (topic, message) => {
-      this.objects[topic] = JSON.parse(message.toString());
+    dispatcher.addRule(element.sensorId, async (topic, message) => {
+      var json = JSON.parse(message.toString());
+      if (!json.hasOwnProperty("on"))
+        await ConnectObjectModel.updateSensorValue(element.roomId, element.sensorId.split("/")[1], json.hasOwnProperty("value") ? json.value : "");
     });
   });
   console.log("init state done");
@@ -23,12 +29,14 @@ ConnectObjectModel.list(50, 0).then((resp) => {
 exports.addObject = async (req, res) => {
   topic = req.body.roomId + "/" + req.body.sensorId
   try {
-    dispatcher.addRule(topic, (topic, message) => {
-      this.objects[topic] = JSON.parse(message.toString());
+    dispatcher.addRule(topic, async (topic, message) => {
+      var json = JSON.parse(message.toString());
+      await ConnectObjectModel.updateSensorValue(req.body.roomId, req.body.sensorId, json.value);
     });
     client.publish("command", JSON.stringify({
       "sensorId": topic,
-      "action": "add"
+      "action": "add",
+      "pin": req.body.pin,
     }), {
       qos: 2
     });
@@ -54,15 +62,12 @@ exports.removeObject = async (req, res) => {
     }), {
       qos: 2
     });
-    delete this.objects[topic];
     ConnectObjectModel.removeBySensorId(topic).then(() => {
       return res.status(401).send({
         ok: true,
         message: 'Object Removed'
       });
     });
-
-
   } catch (error) {
     return res.status(400).send({
       ok: false,
@@ -71,12 +76,13 @@ exports.removeObject = async (req, res) => {
   }
 }
 
-exports.performSetAction = (req, res) => {
+exports.performSetAction = async (req, res) => {
   topic = req.body.roomId + "/" + req.body.sensorId
   try {
     client.publish(topic, JSON.stringify(req.body.action), {
       qos: 2
     });
+    await ConnectObjectModel.updateSensorValue(req.body.roomId, req.body.sensorId, req.body.action.on ? "true" : "false");
     return res.status(401).send({
       ok: true,
       message: 'Message sent'
@@ -87,14 +93,19 @@ exports.performSetAction = (req, res) => {
       message: error
     });
   }
-
-
 }
 
 exports.performGetAction = (req, res) => {
   topic = req.body.roomId + "/" + req.body.sensorId
-  return res.status(200).send({
-    ok: true,
-    message: this.objects[topic] ? this.objects[topic] : null
+  client.publish(topic, JSON.stringify({
+    "on": true
+  }), {
+    qos: 2
   });
-}
+  ConnectObjectModel.findBySensorId(topic).then((result) => {
+    return res.status(200).send({
+      ok: true,
+      message: result[0].value
+    });
+  });
+};

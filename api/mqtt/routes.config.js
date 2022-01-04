@@ -35,16 +35,16 @@ exports.routesConfig = function (app) {
     ]);
 
     app.get('/mqtt/getState', [
-        // passport.authenticate('jwt', {
-        //     session: false
-        // }),
+        ConnectedObjectPermission.hasGetValidFields,
         Mqtt.performGetAction
     ]);
 
-    app.get('/mqtt/listSensors', [
-        // passport.authenticate('jwt', {
-        //     session: false
-        // }),
+    app.get('/mqtt/listConnectedObjects', [
         ConnectedObject.list,
+    ]);
+
+    app.get('/mqtt/listRooms', [
+
+        ConnectedObject.listRooms,
     ]);
 }

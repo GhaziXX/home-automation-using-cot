@@ -29,6 +29,32 @@ exports.hasConnectedObjectValidFields = (req, res, next) => {
     }
 };
 
+
+exports.hasGetValidFields = (req, res, next) => {
+    let errors = [];
+    if (req.body) {
+        if (!req.body.roomId) {
+            errors.push('Missing roomId field');
+        }
+        if (!req.body.sensorId) {
+            errors.push('Missing sensorId field');
+        }
+        if (errors.length) {
+            return res.status(400).send({
+                ok: false,
+                message: errors
+            });
+        } else {
+            return next();
+        }
+    } else {
+        return res.status(400).send({
+            ok: false,
+            message: 'Missing roomId and sensorId fields'
+        });
+    }
+};
+
 //// Check if a sensor exists
 exports.isSensorExists = (req, res, next) => {
     const sensorId = req.body.roomId + "/" + req.body.sensorId;
@@ -45,11 +71,12 @@ exports.isSensorExists = (req, res, next) => {
                     "roomId": req.body.roomId,
                     "sensorId": sensorId,
                     "pin": req.body.pin,
+                    "value": ""
                 }).then(() => {
                     return next();
                 });
 
-                
+
             }
         }
     );

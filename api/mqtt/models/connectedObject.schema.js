@@ -19,12 +19,18 @@ const ConnectedObjectSchema = new Schema({
         },
         required: [true, "Sensor cannot be empty"],
     },
-    pin:{
+    pin: {
         type: Number,
         index: {
             unique: false,
         },
         required: [true, "Sensor pin cannot be empty"],
+    },
+    value: {
+        type: String,
+        index: {
+            unique: false,
+        },
     }
 
 }, {
@@ -55,6 +61,35 @@ ConnectedObjectSchema.statics.findByRoomId = (roomId) => {
     return mongoose.model("ConnectedObject", ConnectedObjectSchema).find({
         roomId: roomId
     });
+};
+
+//// Find user by sensorid
+ConnectedObjectSchema.statics.listRooms = () => {
+    return mongoose.model("ConnectedObject", ConnectedObjectSchema).aggregate([{
+        $group: {
+            _id: {
+                roomId: "$roomId"
+            },
+            sensors: {
+                $addToSet: "$sensorId"
+            }
+        }
+    }]);
+};
+
+
+//// Update the sensor value
+ConnectedObjectSchema.statics.updateSensorValue = (roomId, sensorId, value) => {
+    const filter = {
+        "roomId": roomId,
+        "sensorId": roomId+"/"+sensorId
+    };
+    const updateDoc = {
+        $set: {
+            value: value
+        },
+    };
+    return mongoose.model("ConnectedObject", ConnectedObjectSchema).updateOne(filter,updateDoc);
 };
 
 /**
