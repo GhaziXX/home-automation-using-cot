@@ -95,7 +95,7 @@ exports.isPasswordAndUserMatch = async (req, res, next) => {
                         roles: user[0].permissions,
                         jti: uuidv4(),
                         iat: now,
-                        exp: now + validityTime,
+                        exp: now + Number(validityTime),
                         loginId: req.body.loginId
                     };
                     return next();
