@@ -70,8 +70,8 @@ exports.login = (req, res) => {
 
 //// PKCE flow: PostLogin Step
 exports.postLogin = (req, res) => {
-    if (req.headers['post-authorization']) {
-        let authorization = req.headers['post-authorization'].split(' ');
+    if (req.headers['Post-Authorization']) {
+        let authorization = req.headers['Post-Authorization'].split(' ');
         if (authorization[0] !== 'Bearer') {
             return res.status(401).send({
                 ok: false,

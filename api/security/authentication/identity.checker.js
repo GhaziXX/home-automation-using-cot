@@ -88,7 +88,8 @@ exports.isPasswordAndUserMatch = async (req, res, next) => {
                     var now = Math.floor(Date.now() / 1000);
                     req.body = {
                         iss: 'urn:homeautomationcot.me',
-                        aud: 'urn:' + (req.get('origin') ? req.get('origin') : "homeautomationcot.me"),
+                        //aud: 'urn:' + (req.get('origin') ? req.get('origin') : "homeautomationcot.me"),
+                        aud: 'urn:' + "homeautomationcot.me",
                         sub: user[0].email,
                         name: user[0].forename + ' ' + user[0].surname,
                         userId: user[0]._id,
