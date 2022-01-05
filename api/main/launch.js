@@ -6,8 +6,8 @@ const debug = require("debug")('phoenix:server');
 config.initRefreshSecret();
 const tls = require('spdy'); // HTTP2 + HTTPS (HTTP2 over TLS)
 const fs = require('fs');
-let helmet = require('helmet');
-const ocsp = require('ocsp');
+const helmet = require('helmet');
+const cors = require('cors')
 
 // Load keyfiles
 const key_file = process.env.KEY_FILE || config["key-file"]
@@ -21,41 +21,31 @@ const options = {
 }
 app.use(helmet());
 // Setup CORS
-app.use(function (req, resp, next) {
-    if (req.method == "OPTIONS") {
-        req.header["Access-Control-Allow-Origin"] = "*";
-        req.header["Access-Control-Allow-Headers"] = "Special-Request-Header";
-        req.header["Access-Control-Allow-Methods"] = ["GET", "PUT", "POST", "PATCH", "DELETE"];
-        req.header["Access-Control-Allow-Credentials"] = true;
+app.use(cors());
 
-        resp.sendStatus(200);
-    } else {
-        next();
-    }
-});
-
-// Setup OCSP
-var ocspCache = new ocsp.Cache();
 const server = tls.createServer(options, app);
-server.on('OCSPRequest', function (cert, issuer, callback) {
-    ocsp.getOCSPURI(cert, function (err, uri) {
-        if (err) return callback(error);
-        var req = ocsp.request.generate(cert, issuer);
-        var options = {
-            url: uri,
-            ocsp: req.data
-        };
-        ocspCache.request(req.id, options, callback);
-    });
-});
-var sslSessionCache = {};
-server.on('newSession', function (sessionId, sessionData, callback) {
-    sslSessionCache[sessionId] = sessionData;
-    callback();
-});
-server.on('resumeSession', function (sessionId, callback) {
-    callback(null, sslSessionCache[sessionId]);
-});
+// Setup OCSP
+// var ocspCache = new ocsp.Cache();
+
+// server.on('OCSPRequest', function (cert, issuer, callback) {
+//     ocsp.getOCSPURI(cert, function (err, uri) {
+//         if (err) return callback(error);
+//         var req = ocsp.request.generate(cert, issuer);
+//         var options = {
+//             url: uri,
+//             ocsp: req.data
+//         };
+//         ocspCache.request(req.id, options, callback);
+//     });
+// });
+// var sslSessionCache = {};
+// server.on('newSession', function (sessionId, sessionData, callback) {
+//     sslSessionCache[sessionId] = sessionData;
+//     callback();
+// });
+// server.on('resumeSession', function (sessionId, callback) {
+//     callback(null, sslSessionCache[sessionId]);
+// });
 
 const PORT = process.env.PORT || 3000
 
