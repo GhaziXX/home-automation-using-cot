@@ -21,7 +21,6 @@ const base64Encode = (str) => {
 
 //// PKCE flow: PreLogin Step
 exports.preLogin = (req, res) => {
-
     if (req.headers['pre-authorization']) {
         let authorization = req.headers['pre-authorization'].split(' ');
         if (authorization[0] !== 'Bearer') {
@@ -70,8 +69,8 @@ exports.login = (req, res) => {
 
 //// PKCE flow: PostLogin Step
 exports.postLogin = (req, res) => {
-    if (req.headers['Post-Authorization']) {
-        let authorization = req.headers['Post-Authorization'].split(' ');
+    if (req.headers['post-authorization']) {
+        let authorization = req.headers['post-authorization'].split(' ');
         if (authorization[0] !== 'Bearer') {
             return res.status(401).send({
                 ok: false,
@@ -133,7 +132,7 @@ exports.postLogin = (req, res) => {
     } else {
         return res.status(403).send({
             ok: false,
-            message: 'No pre-authorization data'
+            message: 'No Post-Authorization data'
         });
     }
 

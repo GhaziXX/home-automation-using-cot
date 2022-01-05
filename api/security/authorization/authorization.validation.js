@@ -16,8 +16,8 @@ exports.validJWTNeeded = (req, res, next) => {
             });
         } else {
 
-            var aud = 'urn:' + (req.get('origin') ? req.get('origin') : "homeautomationcot.me");
-
+            // var aud = 'urn:' + (req.get('origin') ? req.get('origin') : "homeautomationcot.me");
+            var aud = 'urn:' + "homeautomationcot.me";
             req.jwt = jwt.verify(authorization[1], cert, {
                 issuer: "urn:homeautomationcot.me",
                 audience: aud,
