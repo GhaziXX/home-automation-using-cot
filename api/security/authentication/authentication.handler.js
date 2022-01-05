@@ -101,7 +101,7 @@ exports.postLogin = (req, res) => {
                             ok: true,
                             accessToken: token,
                             refreshToken: refresh_token,
-                            expiration: new Date(req.body.exp*1000),
+                            expiration: new Date(req.body.exp * 1000),
                         });
                     } catch (err) {
                         console.log(err);
@@ -151,7 +151,7 @@ exports.refresh_token = (req, res) => {
         res.status(201).send({
             ok: true,
             access_token: token,
-            expiration: new Date(req.body.exp*1000)
+            expiration: new Date(req.body.exp * 1000)
         });
     } catch (err) {
         res.status(500).send({

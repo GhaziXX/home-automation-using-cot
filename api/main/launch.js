@@ -7,7 +7,6 @@ config.initRefreshSecret();
 const tls = require('spdy'); // HTTP2 + HTTPS (HTTP2 over TLS)
 const fs = require('fs');
 const helmet = require('helmet');
-const cors = require('cors')
 
 // Load keyfiles
 const key_file = process.env.KEY_FILE || config["key-file"]
@@ -20,32 +19,30 @@ const options = {
     dhparam: fs.readFileSync(dh_strongfile)
 }
 app.use(helmet());
-// Setup CORS
-app.use(cors());
 
 const server = tls.createServer(options, app);
-// Setup OCSP
-// var ocspCache = new ocsp.Cache();
+//Setup OCSP
+var ocspCache = new ocsp.Cache();
 
-// server.on('OCSPRequest', function (cert, issuer, callback) {
-//     ocsp.getOCSPURI(cert, function (err, uri) {
-//         if (err) return callback(error);
-//         var req = ocsp.request.generate(cert, issuer);
-//         var options = {
-//             url: uri,
-//             ocsp: req.data
-//         };
-//         ocspCache.request(req.id, options, callback);
-//     });
-// });
-// var sslSessionCache = {};
-// server.on('newSession', function (sessionId, sessionData, callback) {
-//     sslSessionCache[sessionId] = sessionData;
-//     callback();
-// });
-// server.on('resumeSession', function (sessionId, callback) {
-//     callback(null, sslSessionCache[sessionId]);
-// });
+server.on('OCSPRequest', function (cert, issuer, callback) {
+    ocsp.getOCSPURI(cert, function (err, uri) {
+        if (err) return callback(error);
+        var req = ocsp.request.generate(cert, issuer);
+        var options = {
+            url: uri,
+            ocsp: req.data
+        };
+        ocspCache.request(req.id, options, callback);
+    });
+});
+var sslSessionCache = {};
+server.on('newSession', function (sessionId, sessionData, callback) {
+    sslSessionCache[sessionId] = sessionData;
+    callback();
+});
+server.on('resumeSession', function (sessionId, callback) {
+    callback(null, sslSessionCache[sessionId]);
+});
 
 const PORT = process.env.PORT || 3000
 
