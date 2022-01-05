@@ -39,7 +39,7 @@ exports.routesConfig = function (app) {
     // refreshtoken
     //// @returns:
     //accessToken
-    app.post('/auth/refresh', [
+    app.post('/oauth/refresh', [
         Validator.validJWTNeeded,
         Validator.verifyRefreshBodyField,
         Validator.validRefreshNeeded,

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken'),
 fs = require('fs');
 
 const config = require('../../main/env.config');
-const cert = fs.readFileSync(process.env.CERT_FILE || config['jwt-key']);
+const cert = fs.readFileSync(process.env.JWT_KEY || config['jwt-key']);
 
 exports.validJWTNeeded = (req, res, next) => {
     if (req.headers['authorization']) {
@@ -15,7 +15,6 @@ exports.validJWTNeeded = (req, res, next) => {
                 message: 'Unauthorized'
             });
         } else {
-
             // var aud = 'urn:' + (req.get('origin') ? req.get('origin') : "homeautomationcot.me");
             var aud = 'urn:' + "homeautomationcot.me";
             req.jwt = jwt.verify(authorization[1], cert, {
@@ -49,10 +48,8 @@ exports.verifyRefreshBodyField = (req, res, next) => {
 exports.validRefreshNeeded = (req, res, next) => {
     let salt = req.body.refresh_token.split("$")[0]
     let refresh_token = req.body.refresh_token.split("$")[1]
-
     refresh_token = Buffer.from(refresh_token, 'base64').toString();
     let hash = crypto.createHmac('sha512', salt).update(req.jwt.userId + refreshSecret + req.jwt.jti).digest("base64");
-
     if (hash === refresh_token) {
         req.body = req.jwt;
         return next();
