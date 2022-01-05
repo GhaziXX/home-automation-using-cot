@@ -20,6 +20,7 @@ exports.routesConfig = function (app) {
     // UserID
     app.post('/auth/signup',
         [
+            IdentityChecker.hasRegisterValidFields,
             IdentityChecker.isUserExists,
             passport.authenticate('signUp', {
                 session: false
@@ -28,6 +29,7 @@ exports.routesConfig = function (app) {
                 res.location('/users/' + req.user._id);
                 res.status(201).send({
                     ok: true,
+                    message: "created",
                     id: req.user["id"]
                 });
             }

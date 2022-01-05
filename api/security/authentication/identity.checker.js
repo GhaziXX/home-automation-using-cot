@@ -38,6 +38,45 @@ exports.hasAuthValidFields = (req, res, next) => {
     }
 };
 
+//// Check if the request has valid fields for signin
+exports.hasRegisterValidFields = (req, res, next) => {
+    let errors = [];
+    if (req.body) {
+        if (!req.body.email) {
+            errors.push('Missing email field');
+        }
+        if (!req.body.password) {
+            errors.push('Missing password field');
+        }
+        if (!req.body.loginId) {
+            errors.push('Missing loginId field');
+        }
+        if (!req.body.surname) {
+            errors.push('Missing surname field');
+        }
+        if (!req.body.forename) {
+            errors.push('Missing forename field');
+        }
+        if (!req.body.permission) {
+            errors.push('Missing permission field');
+        }
+
+        if (errors.length) {
+            return res.status(400).send({
+                ok: false,
+                message: errors
+            });
+        } else {
+            return next();
+        }
+    } else {
+        return res.status(400).send({
+            ok: false,
+            message: 'Missing fields'
+        });
+    }
+};
+
 //// Check if a user exists
 exports.isUserExists = (req, res, next) => {
     IdentityModel.findByUsername(req.body.username).then(
@@ -46,10 +85,22 @@ exports.isUserExists = (req, res, next) => {
                 console.log(identity[0]);
                 return res.status(400).send({
                     ok: false,
-                    errors: 'Username already exists'
+                    message: 'Username already exists'
                 });
             } else {
-                return next();
+                IdentityModel.findByEmail(req.body.email).then(
+                    async (identity) => {
+                        if (identity[0]) {
+                            return res.status(400).send({
+                                ok: false,
+                                message: 'Email already exists'
+                            });
+                        } else {
+                            return next();
+                        }
+                    }
+                )
+
             }
         }
     );
