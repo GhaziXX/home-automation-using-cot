@@ -100,9 +100,11 @@ exports.postLogin = (req, res) => {
                         return res.status(201).send({
                             ok: true,
                             accessToken: token,
-                            refreshToken: refresh_token
+                            refreshToken: refresh_token,
+                            expiration: req.body.exp,
                         });
                     } catch (err) {
+                        console.log(err);
                         delete this.challenges[hash];
                         delete this.identities[authorizationData[0]];
                         return res.status(500).send({
@@ -148,7 +150,8 @@ exports.refresh_token = (req, res) => {
 
         res.status(201).send({
             ok: true,
-            access_token: token
+            access_token: token,
+            expiration: req.body.exp
         });
     } catch (err) {
         res.status(500).send({
