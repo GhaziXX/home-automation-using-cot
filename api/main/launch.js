@@ -7,6 +7,7 @@ config.initRefreshSecret();
 const tls = require('spdy'); // HTTP2 + HTTPS (HTTP2 over TLS)
 const fs = require('fs');
 const helmet = require('helmet');
+const ocsp = require("ocsp");
 
 // Load keyfiles
 const key_file = process.env.KEY_FILE || config["key-file"]
