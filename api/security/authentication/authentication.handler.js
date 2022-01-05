@@ -101,7 +101,7 @@ exports.postLogin = (req, res) => {
                             ok: true,
                             accessToken: token,
                             refreshToken: refresh_token,
-                            expiration: req.body.exp,
+                            expiration: new Date(req.body.exp*1000),
                         });
                     } catch (err) {
                         console.log(err);
@@ -143,7 +143,7 @@ exports.refresh_token = (req, res) => {
     try {
         var now = Math.floor(Date.now() / 1000);
         req.body.iat = now;
-        req.body.exp = now + validityTime;
+        req.body.exp = now + Number(validityTime);
         let token = jwt.sign(req.body, privateKey, {
             algorithm: 'RS512'
         });
@@ -151,7 +151,7 @@ exports.refresh_token = (req, res) => {
         res.status(201).send({
             ok: true,
             access_token: token,
-            expiration: req.body.exp
+            expiration: new Date(req.body.exp*1000)
         });
     } catch (err) {
         res.status(500).send({
