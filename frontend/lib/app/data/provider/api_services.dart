@@ -2,14 +2,13 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/app/data/models/login.dart';
+import 'package:frontend/app/data/models/profile.dart';
+import 'package:frontend/app/data/models/room.dart';
+import 'package:frontend/app/data/models/sensor.dart';
+import 'package:frontend/app/data/models/signup.dart';
+import 'package:frontend/app/oauth/oauth_lib.dart';
 import 'package:get_it/get_it.dart';
-import 'package:oauth/models/login.dart';
-import 'package:oauth/models/profile.dart';
-import 'package:oauth/models/room.dart';
-import 'package:oauth/models/sensor.dart';
-import 'package:oauth/models/signup.dart';
-
-import '../oauth/oauth_lib.dart';
 
 class APIServices {
   Future<Login> login({required email, required password}) async {

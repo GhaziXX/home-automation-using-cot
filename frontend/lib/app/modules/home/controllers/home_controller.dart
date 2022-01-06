@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/app/data/models/room.dart';
+import 'package:frontend/app/data/models/sensor.dart';
 import 'package:frontend/app/data/provider/api_services.dart';
 import 'package:get/get.dart';
 
-import 'package:frontend/app/data/provider/TempHumidAPI.dart';
 import 'package:frontend/app/modules/connected_device/views/connected_device_view.dart';
 import 'package:frontend/app/modules/home/views/dashboard_view.dart';
 import 'package:frontend/app/modules/home/views/settings_view.dart';
@@ -30,11 +29,14 @@ class HomeController extends GetxController {
     SettingsView(),
   ];
 
-  Future<List<Room>> get rooms async {
-    List<Room> rooms =
-        await GetIt.I<APIServices>().listRooms(page: 0, limit: 15);
-    return rooms;
-  }
+  // Future<List<Room>> get rooms async {
+  //   List<Room> rooms =
+  //       await GetIt.I<APIServices>().listRooms(page: 0, limit: 15);
+  //   return rooms;
+  // }
+
+  Future<List<Room>> rooms =
+      GetIt.I<APIServices>().listRooms(page: 0, limit: 15);
 
   Room newRoom = Room(sensors: [], id: "add");
 
@@ -78,52 +80,6 @@ class HomeController extends GetxController {
     update([1, true]);
   }
 
-  // switches in the room
-  onSwitched(int index) {
-    isToggled[index] = !isToggled[index];
-    if (index == 0) {
-      var value = isToggled[index] ? "1" : "0";
-      TempHumidAPI.updateLed1Data(value);
-    }
-    if (index == 1) {
-      var value = isToggled[index] ? "#ffffff" : "#000000";
-      TempHumidAPI.updateRGBdata(value);
-    }
-    update([2, true]);
-  }
-
-  // function to retreve sensor data
-  retrieveSensorData() async {
-    // Sensor temperature data fetch
-    Sensor temper = await TempHumidAPI.getTempData();
-    tempStream.add(temper);
-
-    // Sensor humidity data fetch
-    Sensor humid = await TempHumidAPI.getHumidData();
-    humidStream.add(humid);
-  }
-
-  getSmartSystemStatus() async {
-    var data = await TempHumidAPI.getLed1Data();
-    var rgbData = await TempHumidAPI.getRGBstatus();
-    var value = int.parse(data.value!);
-    if (value == 1) {
-      isToggled[0] = true;
-    } else if (value == 0) {
-      isToggled[0] = false;
-    }
-    if (rgbData.value?.compareTo("#000000") == 0) {
-      isToggled[1] = false;
-    } else {
-      isToggled[1] = true;
-    }
-    update([2, true]);
-  }
-
-  sendRGBColor(String hex) {
-    TempHumidAPI.updateRGBdata(hex);
-  }
-
   streamInit() {
     tempStream = StreamController();
     humidStream = StreamController();
@@ -132,17 +88,14 @@ class HomeController extends GetxController {
     smokeStream = StreamController();
     gasStream = StreamController();
     Timer.periodic(
-      Duration(seconds: 3),
-      (_) {
-        getSmartSystemStatus();
-        retrieveSensorData();
-      },
+      Duration(seconds: 1),
+      (_) {},
     );
   }
 
   @override
   void onInit() {
-    rooms.add(newRoom);
+    rooms.then((value) => value.add(newRoom));
     streamInit();
     super.onInit();
   }

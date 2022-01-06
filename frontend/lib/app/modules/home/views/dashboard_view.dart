@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/app/data/models/sensor.dart';
+import 'package:frontend/app/data/models/room.dart';
+import 'package:frontend/app/data/provider/api_services.dart';
 
 import 'package:get/get.dart';
 import 'package:frontend/app/global_widgets/room_selector.dart';
 import 'package:frontend/app/modules/home/controllers/home_controller.dart';
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 
 import 'package:frontend/app/theme/text_theme.dart';
+import 'package:get_it/get_it.dart';
 
 int room_index = 0;
 
@@ -17,14 +18,13 @@ class DashboardView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     Size size = Get.size;
-
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: size.width * 0.067),
-      height: size.height,
-      width: size.width,
-      color: Theme.of(context).scaffoldBackgroundColor,
-      child: SingleChildScrollView(
-        child: Column(
+        padding: EdgeInsets.symmetric(horizontal: size.width * 0.067),
+        height: size.height,
+        width: size.width,
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: SingleChildScrollView(
+            child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -33,13 +33,12 @@ class DashboardView extends GetView<HomeController> {
             GetBuilder<HomeController>(
               id: 7,
               builder: (_) {
-                int length = controller.rooms.then((value) => value.length);
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Welcome\nHome, ${controller.rooms}',
+                      'Welcome\nHome, ${controller.userName}',
                       style: HomeFiTextTheme.kSubHeadTextStyle
                           .copyWith(color: Theme.of(context).primaryColorDark),
                     ),
@@ -49,175 +48,161 @@ class DashboardView extends GetView<HomeController> {
             ),
             SizedBox(height: size.height * 0.03),
             GetBuilder<HomeController>(
-              init: HomeController(),
-              id: 1,
-              builder: (_) {
-                List<Stream<Sensor>> streams = [
-                  controller.tempStream.stream,
-                  controller.humidStream.stream,
-                  controller.luminosityStream.stream,
-                  controller.motionStream.stream,
-                  controller.smokeStream.stream,
-                  controller.gasStream.stream
-                ];
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Rooms',
-                      style: HomeFiTextTheme.kSub2HeadTextStyle
-                          .copyWith(color: Theme.of(context).primaryColorDark),
-                    ),
-                    SizedBox(height: size.height * 0.02),
-                    Container(
-                      width: size.width,
-                      height: size.height * 0.12,
-                      child: Theme(
-                        data: Theme.of(context),
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: controller.rooms.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              child: RoomSelector(
-                                roomName: controller.rooms[index].roomName,
-                                roomImageURL:
-                                    controller.rooms[index].roomImgUrl,
-                                isSelected: controller.selectedRoom[index],
-                              ),
-                              onTap: () async {
-                                if (index == controller.rooms.length - 1) {
-                                  final roomName = await showTextInputDialog(
-                                      context: context,
-                                      textFields: const [
-                                        DialogTextField(hintText: "Room Name"),
-                                      ],
-                                      title: 'Add room',
-                                      okLabel: 'add');
-                                  // add room
-                                } else
-                                  controller.roomChange(index);
-                                room_index = index;
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: size.height * 0.02),
-                    Text(
-                      'Sensors',
-                      style: HomeFiTextTheme.kSub2HeadTextStyle
-                          .copyWith(color: Theme.of(context).primaryColorDark),
-                    ),
-                    Container(
-                      width: size.width,
-                      height: size.height * 0.6,
-                      child: GridView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithMaxCrossAxisExtent(
-                                  maxCrossAxisExtent: 200,
-                                  childAspectRatio: 3 / 2,
-                                  crossAxisSpacing: 20,
-                                  mainAxisSpacing: 20),
-                          itemCount: 6,
-                          itemBuilder: (BuildContext context, index) {
-                            return StreamBuilder<Sensor>(
-                              stream: streams[index],
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData ||
-                                    snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                  return SensorBanner(
-                                    img: 'assets/icons/temperature.png',
-                                    title: 'Temperature',
-                                    horizontalPadding: 1,
-                                    child: SizedBox(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                      height: 15,
-                                      width: 15,
+                init: HomeController(),
+                id: 1,
+                builder: (_) {
+                  return FutureBuilder<List<Room>>(
+                      future:
+                          GetIt.I<APIServices>().listRooms(page: 0, limit: 15),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData &&
+                            snapshot.connectionState == ConnectionState.done) {
+                          return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Rooms',
+                                  style: HomeFiTextTheme.kSub2HeadTextStyle
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .primaryColorDark),
+                                ),
+                                SizedBox(height: size.height * 0.02),
+                                Container(
+                                  width: size.width,
+                                  height: size.height * 0.12,
+                                  child: Theme(
+                                    data: Theme.of(context),
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: snapshot.data!.length,
+                                      itemBuilder: (context, index) {
+                                        return GestureDetector(
+                                          child: RoomSelector(
+                                            roomName: snapshot.data![index].id,
+                                            roomImageURL:
+                                                'assets/icons/${snapshot.data![index].id!}.svg',
+                                            isSelected:
+                                                controller.selectedRoom[index],
+                                          ),
+                                          onTap: () {
+                                            controller.roomChange(index);
+                                            room_index = index;
+                                          },
+                                        );
+                                      },
                                     ),
-                                  );
-                                } else {
-                                  var value;
-                                  snapshot.data!.value == 'nan'
-                                      ? value = 0
-                                      : value =
-                                          double.parse(snapshot.data!.value!)
-                                              .toInt();
-                                  return SensorBanner(
-                                    img:
-                                        'assets/icons/${snapshot.data!.sensorId}.png',
-                                    title: '${snapshot.data!.sensorId}',
-                                    horizontalPadding: Get.width * 0.046,
-                                    child: Text(
-                                      '${snapshot.data!}',
-                                      style: HomeFiTextTheme.kSub2HeadTextStyle
-                                          .copyWith(
-                                        color:
-                                            Theme.of(context).primaryColorDark,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                SizedBox(height: size.height * 0.02),
+                                Text(
+                                  'Sensors',
+                                  style: HomeFiTextTheme.kSub2HeadTextStyle
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .primaryColorDark),
+                                ),
+                                Container(
+                                    width: size.width,
+                                    height: size.height * 0.6,
+                                    child: GridView.builder(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      gridDelegate:
+                                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                                              maxCrossAxisExtent: 200,
+                                              childAspectRatio: 3 / 2,
+                                              crossAxisSpacing: 20,
+                                              mainAxisSpacing: 20),
+                                      itemCount: snapshot
+                                          .data![room_index].sensors!.length,
+                                      itemBuilder:
+                                          (BuildContext context, index) {
+                                        var value;
+                                        snapshot.data![room_index]
+                                                    .sensors![index] ==
+                                                'nan'
+                                            ? value = 0
+                                            : value = double.parse(snapshot
+                                                    .data![room_index]
+                                                    .sensors![index]
+                                                    .value)
+                                                .toInt();
+                                        return SensorBanner(
+                                          img:
+                                              'assets/icons/${snapshot.data![room_index].sensors![index].id}.png',
+                                          title:
+                                              '${snapshot.data![room_index].sensors![index].id}',
+                                          horizontalPadding: Get.width * 0.046,
+                                          child: Text(
+                                            '${snapshot.data![room_index].sensors![index].value}',
+                                            style: HomeFiTextTheme
+                                                .kSub2HeadTextStyle
+                                                .copyWith(
+                                              color: Theme.of(context)
+                                                  .primaryColorDark,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    )),
+                                SizedBox(height: size.height * 0.02),
+                                Text(
+                                  'Add sensors',
+                                  style: HomeFiTextTheme.kSub2HeadTextStyle
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .primaryColorDark),
+                                ),
+                                SizedBox(height: size.height * 0.02),
+                                TextField(
+                                  controller: _sensorNameController,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    labelText: 'Sensor name',
+                                  ),
+                                ),
+                                SizedBox(height: size.height * 0.02),
+                                TextFormField(
+                                  controller: _sensorPinController,
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
                                       ),
-                                    ),
-                                  );
-                                }
-                              },
-                            );
-                          }),
-                    ),
-                    SizedBox(height: size.height * 0.02),
-                    Text(
-                      'Add sensors',
-                      style: HomeFiTextTheme.kSub2HeadTextStyle
-                          .copyWith(color: Theme.of(context).primaryColorDark),
-                    ),
-                    SizedBox(height: size.height * 0.02),
-                    TextField(
-                      controller: _sensorNameController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        labelText: 'Sensor name',
-                      ),
-                    ),
-                    SizedBox(height: size.height * 0.02),
-                    TextFormField(
-                      controller: _sensorPinController,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          labelText: "Sensor pin"),
-                    ),
-                    SizedBox(height: size.height * 0.02),
-                    OutlinedButton(
-                        child: Text("Add"),
-                        onPressed: () {
-                          String sensorName = _sensorNameController.text;
-                          String sensorPin = _sensorPinController.text;
-                          // bch nzidou sensor
-                        },
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                    side: BorderSide(color: Colors.red))))),
-                    SizedBox(
-                      height: 500,
-                    )
-                  ],
-                );
-              },
-            ),
+                                      labelText: "Sensor pin"),
+                                ),
+                                SizedBox(height: size.height * 0.02),
+                                OutlinedButton(
+                                    child: Text("Add"),
+                                    onPressed: () {
+                                      String sensorName =
+                                          _sensorNameController.text;
+                                      String sensorPin =
+                                          _sensorPinController.text;
+                                      // bch nzidou sensor
+                                    },
+                                    style: ButtonStyle(
+                                        shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(18.0),
+                                                side: BorderSide(
+                                                    color: Colors.red))))),
+                                SizedBox(
+                                  height: 500,
+                                )
+                              ]);
+                        } else {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                      });
+                }),
           ],
-        ),
-      ),
-    );
+        )));
   }
 }
 

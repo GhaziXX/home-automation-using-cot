@@ -8,8 +8,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:oauth/main.dart';
-
 void main() {
   // SignUp registerResp = await GetIt.I<APIServices>().register(
   //     forename: "flutter",

@@ -4,8 +4,6 @@ import 'package:frontend/app/modules/signin/signin.dart';
 import 'package:frontend/app/theme/color_theme.dart';
 import 'package:frontend/app/modules/signin/widgets/custom_circle_button.dart';
 
-import 'package:frontend/app/routes/app_pages.dart';
-
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen();
 

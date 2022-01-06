@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:frontend/app/theme/text_theme.dart';
 
 class RoomSelector extends StatelessWidget {
-  final String roomName;
-  final String roomImageURL;
-  final bool isSelected;
+  final String? roomName;
+  final String? roomImageURL;
+  final bool? isSelected;
 
   const RoomSelector({
     Key? key,
@@ -27,7 +27,7 @@ class RoomSelector extends StatelessWidget {
             width: Get.height * 0.083,
             padding: EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: isSelected
+              color: isSelected!
                   ? Theme.of(context).primaryColor
                   : Theme.of(context).scaffoldBackgroundColor,
               border: Border.all(
@@ -37,15 +37,15 @@ class RoomSelector extends StatelessWidget {
               borderRadius: BorderRadius.circular(15),
             ),
             child: SvgPicture.asset(
-              roomImageURL,
-              color: isSelected
+              roomImageURL!,
+              color: isSelected!
                   ? Theme.of(context).scaffoldBackgroundColor
                   : Theme.of(context).primaryColor,
             ),
           ),
           SizedBox(height: Get.height * 0.01),
           Text(
-            roomName,
+            roomName!,
             style: HomeFiTextTheme.kSub2HeadTextStyle.copyWith(
                 color: Theme.of(context).primaryColorDark, fontSize: 10),
           ),
