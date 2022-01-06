@@ -2,13 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:home_fi/app/modules/home/bindings/home_binding.dart';
-import 'package:home_fi/app/modules/home/views/home_view.dart';
-import 'package:home_fi/app/modules/signup/signup.dart';
-import 'package:home_fi/app/theme/color_theme.dart';
-import 'package:home_fi/app/modules/signin/widgets/custom_circle_button.dart';
+import 'package:frontend/app/modules/home/bindings/home_binding.dart';
+import 'package:frontend/app/modules/home/views/home_view.dart';
+import 'package:frontend/app/modules/signup/signup.dart';
+import 'package:frontend/app/theme/color_theme.dart';
+import 'package:frontend/app/modules/signin/widgets/custom_circle_button.dart';
 
-import 'package:home_fi/app/routes/app_pages.dart';
+import 'package:frontend/app/routes/app_pages.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen();

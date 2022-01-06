@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:home_fi/app/data/models/sensor_model.dart';
-import 'package:home_fi/app/global_widgets/room_selector.dart';
-import 'package:home_fi/app/modules/home/controllers/home_controller.dart';
+import 'package:frontend/app/data/models/sensor_model.dart';
+import 'package:frontend/app/global_widgets/room_selector.dart';
+import 'package:frontend/app/modules/home/controllers/home_controller.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 
-import 'package:home_fi/app/theme/text_theme.dart';
+import 'package:frontend/app/theme/text_theme.dart';
 
 int room_index = 0;
 

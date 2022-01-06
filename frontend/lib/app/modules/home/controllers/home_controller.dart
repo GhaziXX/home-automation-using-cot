@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:home_fi/app/data/models/sensor_model.dart';
-import 'package:home_fi/app/data/models/room_model.dart';
-import 'package:home_fi/app/data/provider/TempHumidAPI.dart';
-import 'package:home_fi/app/modules/connected_device/views/connected_device_view.dart';
-import 'package:home_fi/app/modules/home/views/dashboard_view.dart';
-import 'package:home_fi/app/modules/home/views/settings_view.dart';
+import 'package:frontend/app/data/models/sensor_model.dart';
+import 'package:frontend/app/data/models/room_model.dart';
+import 'package:frontend/app/data/provider/TempHumidAPI.dart';
+import 'package:frontend/app/modules/connected_device/views/connected_device_view.dart';
+import 'package:frontend/app/modules/home/views/dashboard_view.dart';
+import 'package:frontend/app/modules/home/views/settings_view.dart';
 
 class HomeController extends GetxController {
   // bottom nav current index.

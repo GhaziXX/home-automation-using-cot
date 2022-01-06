@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:home_fi/app/data/models/sensor_model.dart';
+import 'package:frontend/app/data/models/sensor_model.dart';
 import 'package:http/http.dart' as http;
 
 class TempHumidAPI {
