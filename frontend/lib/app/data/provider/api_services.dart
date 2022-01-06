@@ -1,20 +1,22 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:frontend/app/data/models/login.dart';
-import 'package:frontend/app/data/models/profile.dart';
-import 'package:frontend/app/data/models/room.dart';
-import 'package:frontend/app/data/models/sensor.dart';
-import 'package:frontend/app/data/models/signup.dart';
-import 'package:frontend/app/oauth/oauth_lib.dart';
 import 'package:get_it/get_it.dart';
+import 'package:oauth/models/login.dart';
+import 'package:oauth/models/profile.dart';
+import 'package:oauth/models/room.dart';
+import 'package:oauth/models/sensor.dart';
+import 'package:oauth/models/signup.dart';
+
+import '../oauth/oauth_lib.dart';
 
 class APIServices {
   Future<Login> login({required email, required password}) async {
     try {
-      var x = await GetIt.I<OAuthSettings>()
+      await GetIt.I<OAuthSettings>()
           .oauth
           .requestTokenAndSave(PasswordGrant(email: email, password: password));
-      print('dd ${x.accessToken}');
       return Login(loggedIn: true, message: "loggedIn");
     } on DioError catch (e) {
       return Login.fromJson(e.response!.data);
@@ -194,7 +196,10 @@ class APIServices {
           options: Options(contentType: request.contentType));
       return Sensor(value: null, id: objectId, roomId: roomId);
     } on DioError catch (e) {
-      return Sensor(value: e.response!.data["message"], id: null, roomId: null);
+      return Sensor(
+          value: e.response!.data["ok"],
+          id: e.response!.data.toString(),
+          roomId: null);
     }
   }
 
@@ -245,21 +250,19 @@ class APIServices {
       {required String roomId, required String objectId}) async {
     final request = RequestOptions(
       path: '/',
+      queryParameters: {"roomId": roomId, "sensorId": objectId},
       method: 'GET',
-      data: {"roomId": roomId, "sensorId": objectId},
       contentType: 'application/json',
     );
     final Dio dio = Dio();
     try {
-      var resp = await dio.request(
-          "https://api.homeautomationcot.me/mqtt/getState",
-          data: request.data,
-          options: Options(
-              contentType: request.contentType, method: request.method));
-      return Sensor(
-          value: resp.data["message"]["value"], id: objectId, roomId: roomId);
+      var resp = await dio.get(
+        "https://api.homeautomationcot.me/mqtt/getState",
+        queryParameters: request.queryParameters,
+      );
+
+      return Sensor(value: resp.data["message"], id: objectId, roomId: roomId);
     } on DioError catch (e) {
-      print(e.response!.data["message"]);
       return Sensor(value: e.response!.data["message"], id: null, roomId: null);
     }
   }
@@ -275,18 +278,55 @@ class APIServices {
       var resp = await dio.request(
           "https://api.homeautomationcot.me/mqtt/listRooms?page=$page&limit=$limit",
           options: Options(contentType: request.contentType));
-
-      return resp.data["message"].map<Room>((e) {
-        List<Sensor> roomSensors = e["sensors"].map<Sensor>((e) async {
-          return await getsetStateOfConnectedObject(
-              roomId: e.split("/")[0], objectId: e.split('/')[1]);
+      Map<String, List> x = Map<String, List>.from(resp.data["message"]);
+      List<Room> rooms = [];
+      x.forEach((key, value) {
+        List<Sensor> sensors = value.map<Sensor>((e) {
+          return Sensor(
+              id: e.keys.elementAt(0),
+              value: e.values.elementAt(0),
+              roomId: key);
         }).toList();
-        e["sensors"] = roomSensors;
-        return Room.fromJson(e);
-      }).toList();
+        rooms.add(Room(id: key, sensors: sensors));
+      });
+      return rooms;
+      // List<Room> fina = [];
+
+      // for (MapEntry e in x.entries) {
+      //   List<String> l = List.from(e.value);
+      //   List<Sensor> s = [];
+      //   for (String element in l) {
+      //     Sensor con = await getsetStateOfConnectedObject(
+      //         objectId: element, roomId: e.key);
+      //     s.add(con);
+      //   }
+
+      //   fina.add(Room(sensors: s, id: e.key));
+      // }
+
     } on DioError catch (e) {
-      print(e.response);
       return [Room(sensors: null, id: null)];
+    }
+  }
+
+  Future<List<Sensor>> listSensorsByRoom({required roomId}) async {
+    final request = RequestOptions(
+      path: '/',
+      method: 'GET',
+      contentType: 'application/json',
+    );
+    final Dio dio = Dio();
+    try {
+      var resp = await dio.request(
+          "https://api.homeautomationcot.me/mqtt/listSensors/$roomId",
+          options: Options(contentType: request.contentType));
+      List<Sensor> sensors = resp.data["message"]
+          .map<Sensor>((e) =>
+              Sensor(value: e["value"], id: e["sensorId"], roomId: roomId))
+          .toList();
+      return sensors;
+    } on DioError catch (e) {
+      return [Sensor(value: null, id: null, roomId: null)];
     }
   }
 }
