@@ -40,12 +40,12 @@ exports.addObject = async (req, res) => {
     }), {
       qos: 2
     });
-    return res.status(401).send({
+    return res.status(201).send({
       ok: true,
       message: 'Object Created'
     });
   } catch (error) {
-    return res.status(400).send({
+    return res.status(404).send({
       ok: false,
       message: error
     });
@@ -63,13 +63,13 @@ exports.removeObject = async (req, res) => {
       qos: 2
     });
     ConnectObjectModel.removeBySensorId(topic).then(() => {
-      return res.status(401).send({
+      return res.status(201).send({
         ok: true,
         message: 'Object Removed'
       });
     });
   } catch (error) {
-    return res.status(400).send({
+    return res.status(404).send({
       ok: false,
       message: error
     });
@@ -83,12 +83,12 @@ exports.performSetAction = async (req, res) => {
       qos: 2
     });
     await ConnectObjectModel.updateSensorValue(req.body.roomId, req.body.sensorId, req.body.action.on ? "true" : "false");
-    return res.status(401).send({
+    return res.status(201).send({
       ok: true,
       message: 'Message sent'
     });
   } catch (error) {
-    return res.status(400).send({
+    return res.status(404).send({
       ok: true,
       message: error
     });

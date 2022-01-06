@@ -40,13 +40,13 @@ exports.preLogin = (req, res) => {
             }
             this.challenges[codeChallenge] = loginId
             //this.codeChallenge = codeChallenge;
-            return res.status(200).send({
+            return res.status(201).send({
                 ok: true,
                 message: loginData
             });
         }
     } else {
-        return res.status(403).send({
+        return res.status(404).send({
             ok: false,
             message: 'No pre-authorization data'
         });

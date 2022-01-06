@@ -115,7 +115,7 @@ exports.isSensorExists = (req, res, next) => {
         async (sensor) => {
             if (sensor[0]) {
                 console.log(sensor[0]);
-                return res.status(400).send({
+                return res.status(404).send({
                     ok: false,
                     message: 'Sensor already exists'
                 });

@@ -54,7 +54,7 @@ exports.validRefreshNeeded = (req, res, next) => {
         req.body = req.jwt;
         return next();
     } else {
-        return res.status(400).send({
+        return res.status(404).send({
             ok: false,
             message: 'Invalid refresh token'
         });

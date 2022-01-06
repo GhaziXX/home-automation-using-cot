@@ -46,7 +46,7 @@ exports.sameUserCantDoThisAction = (req, res, next) => {
     if (req.params.userId !== userId) {
         return next();
     } else {
-        return res.status(400).send({
+        return res.status(403).send({
             ok: false,
             message: 'User does not have the required permissions'
         });

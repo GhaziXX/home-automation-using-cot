@@ -82,7 +82,7 @@ exports.isUserExists = (req, res, next) => {
     IdentityModel.findByUsername(req.body.username).then(
         async (identity) => {
             if (identity[0]) {
-                return res.status(400).send({
+                return res.status(404).send({
                     ok: false,
                     message: 'Username already exists'
                 });
@@ -90,7 +90,7 @@ exports.isUserExists = (req, res, next) => {
                 IdentityModel.findByEmail(req.body.email).then(
                     async (identity) => {
                         if (identity[0]) {
-                            return res.status(400).send({
+                            return res.status(404).send({
                                 ok: false,
                                 message: 'Email already exists'
                             });
