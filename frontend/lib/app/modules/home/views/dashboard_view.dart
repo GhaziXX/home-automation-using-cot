@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/app/data/models/sensor.dart';
 
 import 'package:get/get.dart';
-import 'package:frontend/app/data/models/sensor_model.dart';
 import 'package:frontend/app/global_widgets/room_selector.dart';
 import 'package:frontend/app/modules/home/controllers/home_controller.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
@@ -17,6 +17,7 @@ class DashboardView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     Size size = Get.size;
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: size.width * 0.067),
       height: size.height,
@@ -32,12 +33,13 @@ class DashboardView extends GetView<HomeController> {
             GetBuilder<HomeController>(
               id: 7,
               builder: (_) {
+                int length = controller.rooms.then((value) => value.length);
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Welcome\nHome, ${controller.userName}',
+                      'Welcome\nHome, ${controller.rooms}',
                       style: HomeFiTextTheme.kSubHeadTextStyle
                           .copyWith(color: Theme.of(context).primaryColorDark),
                     ),

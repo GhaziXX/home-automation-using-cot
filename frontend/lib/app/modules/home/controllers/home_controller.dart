@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/app/data/models/room.dart';
+import 'package:frontend/app/data/provider/api_services.dart';
 import 'package:get/get.dart';
-import 'package:frontend/app/data/models/sensor_model.dart';
-import 'package:frontend/app/data/models/room_model.dart';
+
 import 'package:frontend/app/data/provider/TempHumidAPI.dart';
 import 'package:frontend/app/modules/connected_device/views/connected_device_view.dart';
 import 'package:frontend/app/modules/home/views/dashboard_view.dart';
 import 'package:frontend/app/modules/home/views/settings_view.dart';
+import 'package:get_it/get_it.dart';
 
 class HomeController extends GetxController {
   // bottom nav current index.
@@ -27,16 +30,18 @@ class HomeController extends GetxController {
     SettingsView(),
   ];
 
-  // List of room data
-  List<Room> rooms = [
-    Room(roomName: 'Living Room', roomImgUrl: 'assets/icons/sofa.svg'),
-    Room(roomName: 'Bedroom', roomImgUrl: 'assets/icons/bed.svg'),
-    Room(roomName: 'Kitchen', roomImgUrl: 'assets/icons/kitchen.svg'),
-    Room(roomName: 'Garage', roomImgUrl: 'assets/icons/garage.svg'),
-  ];
-  Room newRoom = Room(roomName: 'New', roomImgUrl: 'assets/icons/add.svg');
+  Future<List<Room>> get rooms async {
+    List<Room> rooms =
+        await GetIt.I<APIServices>().listRooms(page: 0, limit: 15);
+    return rooms;
+  }
 
-  List<bool> isToggled = [false, false, false, false, false];
+  Room newRoom = Room(sensors: [], id: "add");
+
+  List<bool> _isToggled = [];
+  void set isToggled(length) {
+    _isToggled = List.generate(length, (index) => false);
+  }
 
   // Sensor & Sensor from sensor;
   late StreamController<Sensor> tempStream;
