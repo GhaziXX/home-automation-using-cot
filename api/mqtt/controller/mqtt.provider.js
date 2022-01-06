@@ -96,16 +96,25 @@ exports.performSetAction = async (req, res) => {
 }
 
 exports.performGetAction = (req, res) => {
-  topic = req.params.roomId + "/" + req.params.sensorId
+  topic = req.query.roomId + "/" + req.query.sensorId
   client.publish(topic, JSON.stringify({
     "on": null
   }), {
     qos: 2
   });
-  ConnectObjectModel.findBySensorId(topic).then((result) => {
-    return res.status(200).send({
-      ok: true,
-      message: result[0].value
+  try {
+    ConnectObjectModel.findBySensorId(topic).then((result) => {
+      console.log(result);
+      return res.status(200).send({
+        ok: true,
+        message: result[0].value
+      });
     });
-  });
+  } catch (error) {
+    return res.status(404).send({
+      ok: true,
+      message: "Object does not exist"
+    });
+  }
+  
 };
