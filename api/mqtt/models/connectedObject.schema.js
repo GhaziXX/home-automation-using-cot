@@ -71,8 +71,7 @@ ConnectedObjectSchema.statics.listRooms = () => {
                 roomId: "$roomId"
             },
             sensors: {
-                $addToSet: "$sensorId",
-                
+                $push: "$sensorId"
             },
             values:
             {
