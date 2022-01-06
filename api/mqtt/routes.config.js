@@ -45,7 +45,6 @@ exports.routesConfig = function (app) {
     ]);
 
     app.get('/mqtt/listRooms', [
-
         ConnectedObject.listRooms,
     ]);
 }

@@ -21,7 +21,6 @@ exports.list = (req, res) => {
 
 //// Get user by ID
 exports.getById = (req, res) => {
-
     IdentityModel.findById(req.params.userId)
         .then((result) => {
             res.status(200).send({ok:true, message: result});

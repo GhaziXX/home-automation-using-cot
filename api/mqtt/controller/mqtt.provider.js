@@ -96,7 +96,7 @@ exports.performSetAction = async (req, res) => {
 }
 
 exports.performGetAction = (req, res) => {
-  topic = req.body.roomId + "/" + req.body.sensorId
+  topic = req.params.roomId + "/" + req.params.sensorId
   client.publish(topic, JSON.stringify({
     "on": null
   }), {
