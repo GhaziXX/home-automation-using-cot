@@ -103,7 +103,6 @@ exports.postLogin = (req, res) => {
                             expiration: new Date(req.body.exp * 1000),
                         });
                     } catch (err) {
-                        console.log(err);
                         delete this.challenges[hash];
                         delete this.identities[authorizationData[0]];
                         return res.status(500).send({
@@ -170,7 +169,7 @@ exports.resetRefreshSecret = (req, res) => {
     } catch (err) {
         res.status(500).send({
             ok: false,
-            errors: err
+            message: err
         });
     }
 };

@@ -1,7 +1,7 @@
 const ConnectedObjectModel = require('../models/connectedObject.model');
 
 //// Check if the request has valid fields for performing operation on sensors
-exports.hasConnectedObjectValidFields = (req, res, next) => {
+exports.hasAddConnectedObjectValidFields = (req, res, next) => {
     let errors = [];
     if (req.body) {
         if (!req.body.roomId) {
@@ -16,7 +16,7 @@ exports.hasConnectedObjectValidFields = (req, res, next) => {
         if (errors.length) {
             return res.status(400).send({
                 ok: false,
-                message: errors
+                message: JSON.stringify(errors)
             });
         } else {
             return next();
@@ -29,6 +29,31 @@ exports.hasConnectedObjectValidFields = (req, res, next) => {
     }
 };
 
+//// Check if the request has valid fields for performing operation on sensors
+exports.hasDeleteConnectedObjectValidFields = (req, res, next) => {
+    let errors = [];
+    if (req.body) {
+        if (!req.body.roomId) {
+            errors.push('Missing roomId field');
+        }
+        if (!req.body.sensorId) {
+            errors.push('Missing sensorId field');
+        }
+        if (errors.length) {
+            return res.status(400).send({
+                ok: false,
+                message: JSON.stringify(errors)
+            });
+        } else {
+            return next();
+        }
+    } else {
+        return res.status(400).send({
+            ok: false,
+            message: 'Missing roomId and sensorId fields'
+        });
+    }
+};
 
 exports.hasGetValidFields = (req, res, next) => {
     let errors = [];
@@ -42,7 +67,35 @@ exports.hasGetValidFields = (req, res, next) => {
         if (errors.length) {
             return res.status(400).send({
                 ok: false,
-                message: errors
+                message: JSON.stringify(errors)
+            });
+        } else {
+            return next();
+        }
+    } else {
+        return res.status(400).send({
+            ok: false,
+            message: 'Missing roomId and sensorId fields'
+        });
+    }
+};
+
+exports.hasSetValidFields = (req, res, next) => {
+    let errors = [];
+    if (req.body) {
+        if (!req.body.roomId) {
+            errors.push('Missing roomId field');
+        }
+        if (!req.body.sensorId) {
+            errors.push('Missing sensorId field');
+        }
+        if (!req.body.action) {
+            errors.push('Missing action field');
+        }
+        if (errors.length) {
+            return res.status(400).send({
+                ok: false,
+                message: JSON.stringify(errors)
             });
         } else {
             return next();
@@ -64,7 +117,7 @@ exports.isSensorExists = (req, res, next) => {
                 console.log(sensor[0]);
                 return res.status(400).send({
                     ok: false,
-                    errors: 'Sensor already exists'
+                    message: 'Sensor already exists'
                 });
             } else {
                 ConnectedObjectModel.createConnectedObject({

@@ -13,7 +13,7 @@ exports.routesConfig = function (app) {
             session: false
         }),
         AuthorizationPermission.minimumPermissionLevelRequired(Master),
-        ConnectedObjectPermission.hasConnectedObjectValidFields,
+        ConnectedObjectPermission.hasAddConnectedObjectValidFields,
         ConnectedObjectPermission.isSensorExists,
         Mqtt.addObject
     ]);
@@ -23,7 +23,7 @@ exports.routesConfig = function (app) {
             session: false
         }),
         AuthorizationPermission.minimumPermissionLevelRequired(Master),
-        ConnectedObjectPermission.hasConnectedObjectValidFields,
+        ConnectedObjectPermission.hasDeleteConnectedObjectValidFields,
         Mqtt.removeObject
     ]);
 
@@ -31,6 +31,7 @@ exports.routesConfig = function (app) {
         passport.authenticate('jwt', {
             session: false
         }),
+        ConnectedObjectPermission.hasSetValidFields,
         Mqtt.performSetAction
     ]);
 

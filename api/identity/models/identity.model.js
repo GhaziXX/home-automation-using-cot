@@ -24,6 +24,9 @@ exports.findById = (id) => {
             result = result.toJSON();
             delete result._id;
             delete result.__v;
+            delete result.password;
+            delete result.isLocked;
+            delete result.loginAttempts;
             return result;
         });
 };
@@ -38,7 +41,13 @@ exports.createIdentity = (identityData) => {
 //// List all users
 exports.list = (perPage, page) => {
     return new Promise((resolve, reject) => {
-        Identity.find()
+        Identity.find({}, {
+                fullname: 1,
+                id: 1,
+                email: 1,
+                username: 1,
+                permissions: 1,
+            })
             .limit(perPage)
             .skip(perPage * page)
             .exec(function (err, users) {
@@ -68,9 +77,9 @@ exports.patchIdentity = (id, userData) => {
         Identity.findById(id, function (err, user) {
             if (err) reject(err);
             for (let i in userData) {
-                if (i === 'permissions' || i === 'password') {
-                    continue;
-                }
+                // if (i === 'permissions' || i === 'password') {
+                //     continue;
+                // }
                 user[i] = userData[i];
             }
             user.save(function (err, updatedUser) {
@@ -85,7 +94,7 @@ exports.patchIdentity = (id, userData) => {
 //// Remove by id
 exports.removeById = (userId) => {
     return new Promise((resolve, reject) => {
-        Identity.remove({
+        Identity.deleteOne({
             _id: userId
         }, (err) => {
             if (err) {

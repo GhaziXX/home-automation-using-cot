@@ -57,7 +57,6 @@ exports.routesConfig = function (app) {
         passport.authenticate('jwt', {
             session: false
         }),
-        AuthorizationPermission.minimumPermissionLevelRequired(Master),
         IdentityProvider.getProfileById
 
     ]);
@@ -108,7 +107,7 @@ exports.routesConfig = function (app) {
     app.patch('/users/:userId', [
         passport.authenticate('jwt', {
             session: false
-        }, () => {}),
+        }),
         AuthorizationPermission.minimumPermissionLevelRequired(Surfer),
         AuthorizationPermission.onlySameUserOrAdminCanDoThisAction,
         IdentityProvider.patchById
@@ -119,7 +118,7 @@ exports.routesConfig = function (app) {
     app.delete('/users/:userId', [
         passport.authenticate('jwt', {
             session: false
-        }, () => {}),
+        }),
         AuthorizationPermission.minimumPermissionLevelRequired(Master),
         AuthorizationPermission.sameUserCantDoThisAction,
         IdentityProvider.removeById

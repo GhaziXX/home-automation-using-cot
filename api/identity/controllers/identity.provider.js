@@ -1,5 +1,6 @@
 const IdentityModel = require('../models/identity.model');
 const argon2 = require('argon2');
+const crypto = require('crypto');
 
 //// List all users in the database
 exports.list = (req, res) => {
@@ -68,10 +69,15 @@ exports.patchById = (req, res) => {
         }).toString("base64");
         req.body.password = salt + "$" + hash;
     }
-    IdentityModel.patchIdentity(req.params.userId, req.body)
+    try {
+        IdentityModel.patchIdentity(req.params.userId, req.body)
         .then((result) => {
             res.status(204).send({ok:true});
         });
+    } catch (error) {
+        res.status(200).send({ok:false});
+    }
+    
 };
 
 //// Remove user by id

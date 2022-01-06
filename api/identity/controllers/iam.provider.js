@@ -32,6 +32,7 @@ passport.use('signUp',
                 return done(null, saved);
 
             } catch (e) {
+                
                 return done(e);
             }
         }

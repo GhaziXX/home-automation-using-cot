@@ -25,7 +25,7 @@ exports.hasAuthValidFields = (req, res, next) => {
         if (errors.length) {
             return res.status(400).send({
                 ok: false,
-                message: errors
+                message: JSON.stringify(errors)
             });
         } else {
             return next();
@@ -48,8 +48,8 @@ exports.hasRegisterValidFields = (req, res, next) => {
         if (!req.body.password) {
             errors.push('Missing password field');
         }
-        if (!req.body.loginId) {
-            errors.push('Missing loginId field');
+        if (!req.body.username) {
+            errors.push('Missing username field');
         }
         if (!req.body.surname) {
             errors.push('Missing surname field');
@@ -64,7 +64,7 @@ exports.hasRegisterValidFields = (req, res, next) => {
         if (errors.length) {
             return res.status(400).send({
                 ok: false,
-                message: errors
+                message: JSON.stringify(errors)
             });
         } else {
             return next();
@@ -82,7 +82,6 @@ exports.isUserExists = (req, res, next) => {
     IdentityModel.findByUsername(req.body.username).then(
         async (identity) => {
             if (identity[0]) {
-                console.log(identity[0]);
                 return res.status(400).send({
                     ok: false,
                     message: 'Username already exists'
