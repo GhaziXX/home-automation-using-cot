@@ -1,6 +1,6 @@
 const ConnectedObjectModel = require('../models/connectedObject.model');
 
-//// List all sensers in the database
+//// List all sensors in the database
 exports.list = (req, res) => {
     let limit = req.query.limit && req.query.limit <= 100 ? parseInt(req.query.limit) : 20;
     let page = 0;
@@ -16,8 +16,7 @@ exports.list = (req, res) => {
             result.forEach(element => {
                 copyItems.push({
                     "roomId": element.roomId,
-                    "sensorId": element.sensorId,
-                    "pin": element.pin
+                    "sensorId": element.sensorId
                 })
             });
             res.status(200).send({
@@ -39,13 +38,21 @@ exports.getBySensorId = (req, res) => {
         });
 };
 
-//// Get user by RoomId
+//// Get room by RoomId
 exports.getByRoomId = (req, res) => {
-    ConnectedObjectModel.findByRoomId(req.body.roomId)
+    ConnectedObjectModel.findByRoomId(req.params.roomId)
         .then((result) => {
+            const copyItems = []
+            result.forEach(element => {
+                copyItems.push({
+                    "sensorId": element.sensorId.split("/")[1],
+                    "value": element.value,
+                    "pin": element.pin
+                })
+            });
             res.status(200).send({
                 ok: true,
-                message: result
+                message: copyItems
             });
         });
 };
@@ -61,14 +68,22 @@ exports.removeBySensorId = (req, res) => {
         });
 };
 
+
 //// Returns all rooms and each corresponding sensors
 exports.listRooms = (req, res) => {
     try {
         ConnectedObjectModel.listRooms()
             .then((result) => {
+                console.log(result);
                 var final = {};
                 result.forEach((elem) => {
-                    final[elem._id.roomId] = elem.sensors.map((e) => e.split("/")[1]);
+                    var result = [];
+                    for (let index = 0; index < elem.sensors.length; index++) {
+                        let x = {};
+                        x[elem.sensors[index].split("/")[1]] = elem.values[index]
+                        result.push(x);
+                    }
+                    final[elem._id.roomId] = result;
                 });
                 res.status(200).send({
                     ok: true,

@@ -71,25 +71,31 @@ ConnectedObjectSchema.statics.listRooms = () => {
                 roomId: "$roomId"
             },
             sensors: {
-                $addToSet: "$sensorId"
+                $addToSet: "$sensorId",
+                
+            },
+            values:
+            {
+                $push: "$value"
             }
+            
+            
         }
     }]);
 };
-
 
 //// Update the sensor value
 ConnectedObjectSchema.statics.updateSensorValue = (roomId, sensorId, value) => {
     const filter = {
         "roomId": roomId,
-        "sensorId": roomId+"/"+sensorId
+        "sensorId": roomId + "/" + sensorId
     };
     const updateDoc = {
         $set: {
             value: value
         },
     };
-    return mongoose.model("ConnectedObject", ConnectedObjectSchema).updateOne(filter,updateDoc);
+    return mongoose.model("ConnectedObject", ConnectedObjectSchema).updateOne(filter, updateDoc);
 };
 
 /**
