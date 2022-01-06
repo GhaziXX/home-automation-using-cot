@@ -57,11 +57,11 @@ exports.hasDeleteConnectedObjectValidFields = (req, res, next) => {
 
 exports.hasGetValidFields = (req, res, next) => {
     let errors = [];
-    if (req.params) {
-        if (!req.params.roomId) {
+    if (req.query) {
+        if (!req.query.roomId) {
             errors.push('Missing roomId field');
         }
-        if (!req.params.sensorId) {
+        if (!req.query.sensorId) {
             errors.push('Missing sensorId field');
         }
         if (errors.length) {

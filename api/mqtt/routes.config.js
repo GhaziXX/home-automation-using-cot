@@ -35,7 +35,7 @@ exports.routesConfig = function (app) {
         Mqtt.performSetAction
     ]);
 
-    app.get('/mqtt/getState/:roomId&:sensorId', [
+    app.get('/mqtt/getState', [
         ConnectedObjectPermission.hasGetValidFields,
         Mqtt.performGetAction
     ]);
