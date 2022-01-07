@@ -31,6 +31,8 @@ dependencies:
   responsive_sizer: ^2.0.1
   another_flushbar:
   google_maps_flutter: ^2.1.1
+  geolocator: ^8.0.1
+  maps_toolkit: ^2.0.0
 
 dev_dependencies:
   flutter_test:

@@ -6,6 +6,9 @@ import 'package:frontend/app/data/models/profile.dart';
 import 'package:frontend/app/data/models/room.dart';
 import 'package:frontend/app/data/models/sensor.dart';
 import 'package:frontend/app/data/provider/api_services.dart';
+import 'package:frontend/app/global_widgets/snackbar.dart';
+
+import 'package:geolocator/geolocator.dart';
 
 import 'package:get/get.dart';
 import 'package:frontend/app/global_widgets/room_selector.dart';
@@ -13,6 +16,7 @@ import 'package:frontend/app/modules/home/controllers/home_controller.dart';
 
 import 'package:frontend/app/theme/text_theme.dart';
 import 'package:get_it/get_it.dart';
+import 'package:maps_toolkit/maps_toolkit.dart';
 
 String cleanValue(Sensor sensor) {
   String text;
@@ -83,6 +87,43 @@ class _DashboradState extends State<Dashborad> {
     setState(() {
       selectedRoom = List.filled(x.length + 1, false);
     });
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return await Geolocator.getCurrentPosition();
   }
 
   @override
@@ -213,11 +254,38 @@ class _DashboradState extends State<Dashborad> {
                             ),
                           ),
                           onTap: () async {
-                            await GetIt.I<APIServices>()
-                                .setStateOfConnectedObject(
-                                    roomId: sensors[index].roomId,
-                                    objectId: sensors[index].id,
-                                    state: !(sensors[index].value == 'true'));
+                            if (sensors[index].id!.contains("servo")) {
+                              Position position = await _determinePosition();
+                              LatLng p =
+                                  LatLng(position.latitude, position.longitude);
+                              List<double> homePosition =
+                                  await GetIt.I<APIServices>().getLocation();
+                              LatLng hp =
+                                  LatLng(homePosition[0], homePosition[1]);
+                              var distanceBetweenPoints =
+                                  SphericalUtil.computeDistanceBetween(p, hp);
+                              if (distanceBetweenPoints < 10) {
+                                await GetIt.I<APIServices>()
+                                    .setStateOfConnectedObject(
+                                        roomId: sensors[index].roomId,
+                                        objectId: sensors[index].id,
+                                        state:
+                                            !(sensors[index].value == 'true'));
+                              } else {
+                                SnackbarMessage(
+                                  message: "You are far away",
+                                  icon: Icon(Icons.error, color: Colors.red),
+                                ).showMessage(
+                                  context,
+                                );
+                              }
+                            } else {
+                              await GetIt.I<APIServices>()
+                                  .setStateOfConnectedObject(
+                                      roomId: sensors[index].roomId,
+                                      objectId: sensors[index].id,
+                                      state: !(sensors[index].value == 'true'));
+                            }
                           },
                         );
                       },

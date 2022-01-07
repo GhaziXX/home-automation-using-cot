@@ -11,6 +11,7 @@ import 'package:frontend/app/oauth/oauth_lib.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+
 class APIServices {
   Future<Login> login({required email, required password}) async {
     try {
@@ -327,7 +328,7 @@ class APIServices {
     }
   }
 
-  Future<LatLng> getLocation() async {
+  Future<List<double>> getLocation() async {
     final request = RequestOptions(
       path: '/',
       method: 'GET',
@@ -338,9 +339,10 @@ class APIServices {
       var res = await dio.request(
           "https://api.homeautomationcot.me/getLocation",
           options: Options(contentType: request.contentType));
-      return LatLng(res.data["message"]["lat"], res.data["message"]["lon"]);
+      List<double> l = [res.data["message"]["lat"], res.data["message"]["lon"]];
+      return l;
     } on DioError catch (e) {
-      return LatLng(0, 0);
+      return [0,0];
     }
   }
 
