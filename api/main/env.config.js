@@ -15,7 +15,7 @@ module.exports = {
     "initRefreshSecret": function () {
         this.actualRefreshSecret = this.actualRefreshSecret.concat("$" + new Date(Date.now()).toISOString())
     },
-    "mqtt-broker":"",
+    "mqtt-broker":"mqtts://mqtt.homeautomationcot.me/",
     "mqtt-port": 8883,
     "mqtt-username": "",
     "mqtt-password": ""
