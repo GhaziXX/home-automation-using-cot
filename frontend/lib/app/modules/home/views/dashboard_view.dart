@@ -21,11 +21,16 @@ String cleanValue(Sensor sensor) {
     var temp = temphum[1].split(':')[1];
     var hum = temphum[0].split(':')[1];
     text = temp + ',' + hum;
-  } else if (sensor.id!.contains('led')) {
+  } else if (sensor.id!.contains('led') || sensor.id!.contains('pir')) {
     if (sensor.value == 'true') {
       text = 'on';
     } else
       text = 'off';
+  } else if (sensor.id!.contains('servo')) {
+    if (sensor.value == 'true') {
+      text = 'opened';
+    } else
+      text = 'closed';
   } else {
     text = double.parse(sensor.value).toStringAsFixed(2);
   }
@@ -155,8 +160,6 @@ class _DashboradState extends State<Dashborad> {
                                   rooms.length, false,
                                   growable: true);
                               selectedRoom.add(true);
-                              GetIt.I<APIServices>().addConnectedObject(
-                                  roomId: roomId, objectId: '', pin: 1000);
                             } else
                               roomId = rooms[index].id;
                             sensors = await GetIt.I<APIServices>()
@@ -258,7 +261,9 @@ class _DashboradState extends State<Dashborad> {
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(18.0),
-                                    side: BorderSide(color: Colors.red))))),
+                                    side: BorderSide(
+                                        color:
+                                            Theme.of(context).primaryColor))))),
                 SizedBox(
                   height: 100,
                 )

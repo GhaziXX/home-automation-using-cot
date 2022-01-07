@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/app/data/provider/api_services.dart';
+import 'package:frontend/app/modules/auth/auth.dart';
+import 'package:frontend/app/modules/auth/signin/views/signin_view.dart';
+import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -38,8 +41,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return new Scaffold(
         body: Center(
-          child: Container(
-            // padding: EdgeInsets.only(top: 24),
+      child: Column(
+        children: [
+          Container(
+            height: _size * 0.8,
             child: GoogleMap(
               mapType: MapType.hybrid,
               myLocationButtonEnabled: true,
@@ -57,6 +62,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
           ),
-        ));
+          OutlinedButton(
+              child: Text('logout'),
+              onPressed: () {
+                GetIt.I<APIServices>()
+                    .logout()
+                    .then((value) => Get.off(() => AuthScreen()));
+              },
+              style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side:
+                          BorderSide(color: Theme.of(context).primaryColor)))),
+        ],
+      ),
+    ));
   }
 }
