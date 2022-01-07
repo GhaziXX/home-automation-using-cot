@@ -59,3 +59,9 @@ The VMs are both e2-small machines (optimized for web hosting and serving (i.e. 
 # Certification and Grading
 HTTPS was ensured using Let's Encrypt's Certbot, isuring a secure communication with the middlware and the MQTT broker. DH (Diffie-Hellman parameters) parameters with a length of 4096 bits are also using for TLS connections. In addition to that, some other security parameters were set on the Node.js server to ensure max security.
 The grading of the server was tested using [SSLlabs](https://www.ssllabs.com/) and we had a grade of A+.
+![Alt text](./imgs/grade.png)
+# Screenshots
+# Further Readings
+You can find more information and take a look about the architecture design with the folowing documents:
+-  [User Guide](docs/User%20Guide.pdf)
+-  [Design Document](docs/Design%20Document.pdf)
