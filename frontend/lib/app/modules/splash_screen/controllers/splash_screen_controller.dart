@@ -1,8 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:frontend/app/data/provider/api_services.dart';
+import 'package:frontend/app/modules/auth/auth.dart';
 import 'package:frontend/app/modules/home/views/home_view.dart';
+import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class SplashScreenController extends GetxController
     with SingleGetTickerProviderMixin {
@@ -18,13 +22,16 @@ class SplashScreenController extends GetxController
       vsync: this,
     );
     animationController.forward();
-    animationController.addStatusListener((status) {
+    animationController.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
-        // checkLogin();
+        bool isConnected = await GetIt.I<APIServices>().isConnected();
         Timer(
-          Duration(milliseconds: 1000),
-          () => Get.off(() => HomeView()),
-        );
+            Duration(milliseconds: 1000),
+            () => Get.off(() => isConnected
+                ? HomeView()
+                : ResponsiveSizer(builder: (context, orientation, screenType) {
+                    return AuthScreen();
+                  })));
       }
     });
   }

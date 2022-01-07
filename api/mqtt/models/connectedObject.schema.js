@@ -66,21 +66,20 @@ ConnectedObjectSchema.statics.findByRoomId = (roomId) => {
 //// Find user by sensorid
 ConnectedObjectSchema.statics.listRooms = () => {
     return mongoose.model("ConnectedObject", ConnectedObjectSchema).aggregate([{
-        $group: {
-            _id: {
-                roomId: "$roomId"
+            $group: {
+                _id: {
+                    roomId: "$roomId"
+                },
+                sensors: {
+                    $push: "$sensorId"
+                },
+                values: {
+                    $push: "$value"
+                }
             },
-            sensors: {
-                $push: "$sensorId"
-            },
-            values:
-            {
-                $push: "$value"
-            }
-            
-            
-        }
-    }]);
+
+        },
+    ]);
 };
 
 //// Update the sensor value

@@ -84,14 +84,22 @@ exports.listRooms = (req, res) => {
                         result.push(x);
                     }
                     final[elem._id.roomId] = result;
+
                 });
+                final = Object.keys(final).sort().reduce(
+                    (obj, key) => {
+                        obj[key] = final[key];
+                        return obj;
+                    }, {}
+                );
                 res.status(200).send({
                     ok: true,
                     message: final
                 });
             });
     } catch (error) {
-        res.status(204).send({
+        console.log(error);
+        res.status(404).send({
             ok: false,
             message: null
         });

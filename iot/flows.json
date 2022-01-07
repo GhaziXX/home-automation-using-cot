@@ -1,0 +1,788 @@
+[
+    {
+        "id": "87d6fb2e46cbc0d1",
+        "type": "tab",
+        "label": "MQTT",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a2bb31d64dcf4cf0",
+        "type": "mqtt in",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "topic": "",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "5292361479f4d4b3",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 1,
+        "x": 390,
+        "y": 140,
+        "wires": [
+            [
+                "f50b1098da470342"
+            ]
+        ]
+    },
+    {
+        "id": "cec31f266fb365ea",
+        "type": "inject",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "connect",
+        "props": [
+            {
+                "p": "action",
+                "v": "connect",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 100,
+        "y": 80,
+        "wires": [
+            [
+                "a2bb31d64dcf4cf0",
+                "865678164e811681"
+            ]
+        ]
+    },
+    {
+        "id": "7a4791d9c058d73c",
+        "type": "rpi-gpio out",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "pin": "27",
+        "set": true,
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 1280,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "0cc1841855a2ab56",
+        "type": "function",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "func": "var sensorId = msg.topic.split(\"/\").join(\"_\");\n\nif (msg.payload.hasOwnProperty(\"on\"))\n{\n    msg.pin = global.get(\"pins\")[sensorId];\n    if (msg.payload.on===null)\n    {\n        msg.pin=21;\n    }\n\n    if(sensorId.includes(\"servo\"))\n    {\n        msg.payload = msg.payload.on ? 100 : 0;\n    }else\n    {\n        msg.payload = msg.payload.on;\n    }\n    flow.set(\"topic\",msg.topic);\n    return msg;\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 820,
+        "y": 320,
+        "wires": [
+            [
+                "312ae8f9197460c1"
+            ]
+        ]
+    },
+    {
+        "id": "a8ab934ac26a32a0",
+        "type": "inject",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "Subscribe to commands",
+        "props": [
+            {
+                "p": "action",
+                "v": "subscribe",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "command",
+        "x": 130,
+        "y": 120,
+        "wires": [
+            [
+                "a2bb31d64dcf4cf0"
+            ]
+        ]
+    },
+    {
+        "id": "f50b1098da470342",
+        "type": "switch",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "topic type",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "command",
+                "vt": "str"
+            },
+            {
+                "t": "neq",
+                "v": "command",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 560,
+        "y": 160,
+        "wires": [
+            [
+                "1be37a2191f751ec"
+            ],
+            [
+                "0cc1841855a2ab56"
+            ]
+        ]
+    },
+    {
+        "id": "1be37a2191f751ec",
+        "type": "function",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "func": "returned = msg;\nmsg = {};\nvar variable = `pins.${returned.payload.sensorId.split(\"/\").join(\"_\")}`;\nif (returned.payload.action === \"add\")\n{\n    msg[\"action\"] = \"subscribe\";\n    global.set(variable,returned.payload.pin);\n    \n}else\n{\n    msg[\"action\"] = \"unsubscribe\";\n    global.set(variable,null);\n}\n\nmsg[\"topic\"] = returned.payload.sensorId;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 280,
+        "wires": [
+            [
+                "a2bb31d64dcf4cf0"
+            ]
+        ]
+    },
+    {
+        "id": "f64cc1af30195053",
+        "type": "array-loop",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "array-loop",
+        "key": "al1a60a19a718526",
+        "keyType": "msg",
+        "reset": false,
+        "resetValue": "value-null",
+        "array": "array",
+        "arrayType": "msg",
+        "x": 380,
+        "y": 340,
+        "wires": [
+            [],
+            [
+                "f0294be570de0cf2"
+            ]
+        ]
+    },
+    {
+        "id": "f0294be570de0cf2",
+        "type": "function",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "return msg",
+        "func": "msg.action = msg.payload.action;\nmsg.topic = msg.payload.topic;\nvar variable = `pins.${msg.topic.split(\"/\").join(\"_\")}`;\nglobal.set(variable,msg.payload.pin);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 440,
+        "wires": [
+            [
+                "f64cc1af30195053",
+                "a2bb31d64dcf4cf0"
+            ]
+        ]
+    },
+    {
+        "id": "bd30a52089f28e9c",
+        "type": "http request",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://api.homeautomationcot.me/mqtt/listConnectedObjects",
+        "tls": "1b0f60a5714063f7",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 270,
+        "y": 260,
+        "wires": [
+            [
+                "b4ebc7a30fd83ad2"
+            ]
+        ]
+    },
+    {
+        "id": "1a7a07d0315722f3",
+        "type": "inject",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "init sensors",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 90,
+        "y": 160,
+        "wires": [
+            [
+                "bd30a52089f28e9c"
+            ]
+        ]
+    },
+    {
+        "id": "b4ebc7a30fd83ad2",
+        "type": "function",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "func": "if (msg.payload.ok === true)\n{\n    result = [];\n    for(let i=0;i<msg.payload.message.length;i++)\n    {\n        result.push({\"action\":\"subscribe\",\"topic\":msg.payload.message[i].sensorId,\"pin\":msg.payload.message[i].pin});\n    }\n    msg.array = result;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 460,
+        "wires": [
+            [
+                "f64cc1af30195053"
+            ]
+        ]
+    },
+    {
+        "id": "312ae8f9197460c1",
+        "type": "function",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "Switch to Pin",
+        "func": "node.status({fill:\"green\", shape:\"ring\", text:\"start\"});\nvar pinArray = [];\nvar loop;\nfor (loop =1;loop < msg.pin;loop++) {\n    pinArray.push(null);\n}\nnode.status({fill:\"red\", shape:\"ring\", text:[msg.pin,msg.payload]});\npinArray.push(msg);\nnode.send(pinArray);\n",
+        "outputs": 40,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1090,
+        "y": 320,
+        "wires": [
+            [
+                "03b47ef7d25ea12f"
+            ],
+            [
+                "419156aeb7b1d2c8"
+            ],
+            [
+                "25cd730cf9903e63"
+            ],
+            [
+                "0422867d7bf3df89"
+            ],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [
+                "dde92060e725d038"
+            ],
+            [
+                "7a4791d9c058d73c"
+            ],
+            [],
+            [
+                "7dc84857cc48477c"
+            ],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "7dc84857cc48477c",
+        "type": "rpi-gpio out",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "pin": "22",
+        "set": true,
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 1280,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "dde92060e725d038",
+        "type": "rpi-gpio out",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "pin": "18",
+        "set": "",
+        "level": "0",
+        "freq": "500",
+        "out": "pwm",
+        "bcm": true,
+        "x": 1280,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "0422867d7bf3df89",
+        "type": "rpi-dht22",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "DHT11",
+        "topic": "",
+        "dht": "11",
+        "pintype": "0",
+        "pin": 4,
+        "x": 1270,
+        "y": 420,
+        "wires": [
+            [
+                "0e27f272a4b82c1b"
+            ]
+        ]
+    },
+    {
+        "id": "0e27f272a4b82c1b",
+        "type": "function",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "Parse",
+        "func": "\nmsg.payload = {\"value\":`humidity:${msg.humidity},temperature:${msg.payload}`};\nmsg.topic = flow.get(\"topic\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1390,
+        "y": 420,
+        "wires": [
+            [
+                "4ed7f2d372c067e6"
+            ]
+        ]
+    },
+    {
+        "id": "4ed7f2d372c067e6",
+        "type": "mqtt out",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "topic": "",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "5292361479f4d4b3",
+        "x": 1530,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "25cd730cf9903e63",
+        "type": "pimcp3008",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "dev": "3008",
+        "pin": "3",
+        "dnum": 0,
+        "bus": 0,
+        "x": 1340,
+        "y": 280,
+        "wires": [
+            [
+                "cf53db8402621600"
+            ]
+        ]
+    },
+    {
+        "id": "419156aeb7b1d2c8",
+        "type": "pimcp3008",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "dev": "3008",
+        "pin": "2",
+        "dnum": 0,
+        "bus": 0,
+        "x": 1340,
+        "y": 220,
+        "wires": [
+            [
+                "9d4058fca2d4540b"
+            ]
+        ]
+    },
+    {
+        "id": "03b47ef7d25ea12f",
+        "type": "pimcp3008",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "dev": "3008",
+        "pin": "1",
+        "dnum": 0,
+        "bus": 0,
+        "x": 1340,
+        "y": 160,
+        "wires": [
+            [
+                "9b95d3219a48a082"
+            ]
+        ]
+    },
+    {
+        "id": "696dc27e5edbb208",
+        "type": "rpi-gpio in",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "pin": "17",
+        "intype": "tri",
+        "debounce": "25",
+        "read": true,
+        "bcm": true,
+        "x": 610,
+        "y": 40,
+        "wires": [
+            [
+                "27ec82118ceb8b75"
+            ]
+        ]
+    },
+    {
+        "id": "cf53db8402621600",
+        "type": "function",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "Parse",
+        "func": "msg.payload = {\"value\":msg.payload};\nmsg.topic = flow.get(\"topic\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1530,
+        "y": 280,
+        "wires": [
+            [
+                "2d05a98e681b9415"
+            ]
+        ]
+    },
+    {
+        "id": "2d05a98e681b9415",
+        "type": "mqtt out",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "topic": "",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "5292361479f4d4b3",
+        "x": 1650,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "865678164e811681",
+        "type": "change",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "set board pins",
+        "rules": [
+            {
+                "t": "set",
+                "p": "board",
+                "pt": "global",
+                "to": "[-1, -1, -1, 2, -1, 3, -1, 4, 14, -1, 15, 17, 18, 27, -1, 22, 23, -1, 24, 10, -1, 9, 25, 11, 8, -1, 7, -1, -1, 5, -1, 6, 12, 13, -1, 19, 16, 26, 20, -1, 21]",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "27ec82118ceb8b75",
+        "type": "function",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "func": "var pin = global.get(\"board\").indexOf(Number(msg.topic.split(\"/\")[1]));\nfor (var key in global.get(\"pins\")) {\n\n    if(global.get(\"pins\")[key] === pin) {\n        msg.topic = key.split(\"_\").join(\"/\");\n         \n    }\n}\nmsg.payload = {\"value\":msg.payload};\nreturn msg;  ",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 40,
+        "wires": [
+            [
+                "d0861fed6bd79736"
+            ]
+        ]
+    },
+    {
+        "id": "d0861fed6bd79736",
+        "type": "mqtt out",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "topic": "",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "5292361479f4d4b3",
+        "x": 930,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "88a8045b0c5f5578",
+        "type": "comment",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "Led green",
+        "info": "",
+        "x": 1420,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "81f3405484fc6b31",
+        "type": "comment",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "Servo",
+        "info": "",
+        "x": 1410,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "d6e921cebd4958bc",
+        "type": "comment",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "Led Red",
+        "info": "",
+        "x": 1420,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "8a89e81df68986ff",
+        "type": "comment",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "DHT",
+        "info": "",
+        "x": 1650,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "b9c34a9ee325d414",
+        "type": "comment",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "Light sensor",
+        "info": "",
+        "x": 1790,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "9d4058fca2d4540b",
+        "type": "function",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "Parse",
+        "func": "msg.payload = {\"value\":(Number(msg.payload)/1024)*3.3};\nmsg.topic = flow.get(\"topic\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1530,
+        "y": 220,
+        "wires": [
+            [
+                "da91eff39a0d4680"
+            ]
+        ]
+    },
+    {
+        "id": "da91eff39a0d4680",
+        "type": "mqtt out",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "topic": "",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "5292361479f4d4b3",
+        "x": 1650,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "9b95d3219a48a082",
+        "type": "function",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "Parse",
+        "func": "msg.payload = {\"value\":(Number(msg.payload)/1024)*3.3};\nmsg.topic = flow.get(\"topic\");\nnode.warn(msg);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1530,
+        "y": 160,
+        "wires": [
+            [
+                "2e680cf66dae2c33"
+            ]
+        ]
+    },
+    {
+        "id": "2e680cf66dae2c33",
+        "type": "mqtt out",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "",
+        "topic": "",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "5292361479f4d4b3",
+        "x": 1650,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "cdb1b14b5571e618",
+        "type": "comment",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "CO sensor",
+        "info": "",
+        "x": 1780,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "1418d99323f84c0c",
+        "type": "comment",
+        "z": "87d6fb2e46cbc0d1",
+        "name": "CO2 sensor",
+        "info": "",
+        "x": 1790,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "5292361479f4d4b3",
+        "type": "mqtt-broker",
+        "name": "MQTT",
+        "broker": "mqtt.homeautomationcot.me/",
+        "port": "8083",
+        "tls": "1b0f60a5714063f7",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": true,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "cot",
+        "birthQos": "0",
+        "birthPayload": "ghaziiiiii",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "1b0f60a5714063f7",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "",
+        "verifyservercert": false,
+        "alpnprotocol": ""
+    }
+]

@@ -15,4 +15,7 @@ class GFTheme {
   static const lightBlue = Color(0xffD9EEFF);
   static const lightYellow = Color(0xffFFE28B);
   static const lightPeach = Color(0xffFFD9D3);
+  static const primaryColor = Color(0xFF2697FF);
+  static const secondaryColor = Color(0xFF2A2D3E);
+  static const bgColor = Color(0xFF212332);
 }

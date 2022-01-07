@@ -1,11 +1,11 @@
+import 'package:frontend/app/modules/auth/auth.dart';
+import 'package:frontend/app/modules/auth/signin/views/signin_view.dart';
 import 'package:get/get.dart';
 import 'package:frontend/app/modules/connected_device/bindings/connected_device_binding.dart';
 import 'package:frontend/app/modules/connected_device/views/connected_device_view.dart';
 
 import 'package:frontend/app/modules/home/bindings/home_binding.dart';
 import 'package:frontend/app/modules/home/views/home_view.dart';
-import 'package:frontend/app/modules/signin/signin.dart';
-import 'package:frontend/app/modules/signup/signup.dart';
 import 'package:frontend/app/modules/splash_screen/bindings/splash_screen_binding.dart';
 import 'package:frontend/app/modules/splash_screen/views/splash_screen_view.dart';
 
@@ -32,11 +32,11 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.SIGNIN,
-      page: () => SignInScreen(),
+      page: () => AuthScreen(),
     ),
-    GetPage(
-      name: _Paths.SIGNUP,
-      page: () => SignUpScreen(),
-    ),
+    // GetPage(
+    //   name: _Paths.SIGNUP,
+    //   page: () => SignUpScreen(),
+    // ),
   ];
 }

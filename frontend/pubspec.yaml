@@ -27,6 +27,9 @@ dependencies:
   random_string: ^2.3.1
   dio: ^4.0.4
   get_it: ^7.2.0
+  the_validator: ^2.0.0
+  responsive_sizer: ^2.0.1
+  another_flushbar:
 
 dev_dependencies:
   flutter_test:
