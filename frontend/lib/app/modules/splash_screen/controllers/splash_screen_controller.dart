@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/app/data/provider/api_services.dart';
 import 'package:frontend/app/modules/auth/auth.dart';
 import 'package:frontend/app/modules/home/views/home_view.dart';
-import 'package:frontend/app/modules/settings/views/settings.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -28,8 +27,11 @@ class SplashScreenController extends GetxController
         bool isConnected = await GetIt.I<APIServices>().isConnected();
         Timer(
             Duration(milliseconds: 1000),
-            () => Get.off(
-                () => isConnected ? SettingsScreen() : SettingsScreen()));
+            () => Get.off(() => isConnected
+                ? HomeView()
+                : ResponsiveSizer(builder: (context, orientation, screenType) {
+                    return AuthScreen();
+                  })));
       }
     });
   }

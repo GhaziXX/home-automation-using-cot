@@ -330,7 +330,7 @@ class APIServices {
     }
   }
 
-  Future<LatLng> getsetLocation() async {
+  Future<LatLng> getLocation() async {
     final request = RequestOptions(
       path: '/',
       method: 'GET',
@@ -355,11 +355,13 @@ class APIServices {
     );
     final Dio dio = Dio();
     try {
-      await dio.request("https://api.homeautomationcot.me/setLocation",
-          data: {"lat": location.latitude, "lon": location.longitude},
-          options: Options(contentType: request.contentType));
+      await await GetIt.I<OAuthSettings>().authenticatedDio.request(
+          "https://api.homeautomationcot.me/setLocation?coordinates=${location.latitude},${location.longitude}",
+          options: Options(
+              contentType: request.contentType, method: request.method));
       return true;
     } on DioError catch (e) {
+      print(e.response!.data);
       return false;
     }
   }

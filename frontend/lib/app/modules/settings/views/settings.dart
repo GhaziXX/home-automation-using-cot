@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/app/data/provider/api_services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -13,34 +15,48 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   Completer<GoogleMapController> _controller = Completer();
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
+  CameraPosition pos = CameraPosition(
+      target: LatLng(36.93995593184964, 10.223821364343166), zoom: 15);
 
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  void getLocation() async {
+    LatLng _pos = await GetIt.I<APIServices>().getLocation();
+    print("zna hna $_pos");
+    setState(() {
+      pos = CameraPosition(target: _pos, zoom: 18);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getLocation();
+  }
 
   @override
   Widget build(BuildContext context) {
+    double _size = MediaQuery.of(context).size.height;
+
     return new Scaffold(
         body: Center(
           child: Container(
-            padding: EdgeInsets.all(16),
-      child: GoogleMap(
-          mapType: MapType.hybrid,
-          initialCameraPosition: _kGooglePlex,
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-          },
-          onLongPress: (coord) {
-            
-          },
-      ),
-    ),
+            // padding: EdgeInsets.only(top: 24),
+            child: GoogleMap(
+              mapType: MapType.hybrid,
+              myLocationButtonEnabled: true,
+              myLocationEnabled: true,
+              trafficEnabled: true,
+              initialCameraPosition: pos,
+              onMapCreated: (GoogleMapController controller) {
+                getLocation();
+                _controller.complete(controller);
+              },
+              onLongPress: (coord) {
+                GetIt.I<APIServices>()
+                    .setLocation(location: coord)
+                    .then((value) => print(value));
+              },
+            ),
+          ),
         ));
   }
 }
