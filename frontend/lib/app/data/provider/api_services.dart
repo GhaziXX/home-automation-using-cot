@@ -250,16 +250,13 @@ class APIServices {
       {required String roomId, required String objectId}) async {
     final request = RequestOptions(
       path: '/',
-      queryParameters: {"roomId": roomId, "sensorId": objectId},
       method: 'GET',
       contentType: 'application/json',
     );
     final Dio dio = Dio();
     try {
       var resp = await dio.get(
-        "https://api.homeautomationcot.me/mqtt/getState",
-        queryParameters: request.queryParameters,
-      );
+          "https://api.homeautomationcot.me/mqtt/getState?roomId=$roomId&sensorId=$objectId");
 
       return Sensor(value: resp.data["message"], id: objectId, roomId: roomId);
     } on DioError catch (e) {

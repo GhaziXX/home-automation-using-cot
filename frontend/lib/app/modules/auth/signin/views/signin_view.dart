@@ -40,9 +40,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Padding(
       padding: EdgeInsets.all(_size.height > 770
-          ? 64
+          ? 32
           : _size.height > 670
-              ? 24
+              ? 16
               : 16),
       child: Center(
         child: Card(
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             : 0.9),
             width: Responsive.isMobile(context) && _size.width < 500
                 ? _size.width
-                : 60.w,
+                : 70.w,
             child: Center(
               child: SingleChildScrollView(
                 physics: BouncingScrollPhysics(),

@@ -21,13 +21,18 @@ exports.findByEmail = (email) => {
 exports.findById = (id) => {
     return Identity.findById(id)
         .then((result) => {
-            result = result.toJSON();
-            delete result._id;
-            delete result.__v;
-            delete result.password;
-            delete result.isLocked;
-            delete result.loginAttempts;
-            return result;
+            try {
+                result = result.toJSON();
+                delete result._id;
+                delete result.__v;
+                delete result.password;
+                delete result.isLocked;
+                delete result.loginAttempts;
+                return result;
+            } catch (error) {
+                return null;
+            }
+
         });
 };
 

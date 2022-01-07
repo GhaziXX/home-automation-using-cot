@@ -16,7 +16,8 @@ exports.list = (req, res) => {
             result.forEach(element => {
                 copyItems.push({
                     "roomId": element.roomId,
-                    "sensorId": element.sensorId
+                    "sensorId": element.sensorId,
+                    "pin": element.pin
                 })
             });
             res.status(200).send({
