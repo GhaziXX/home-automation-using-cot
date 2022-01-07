@@ -26,12 +26,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData.light().copyWith(
-        scaffoldBackgroundColor: GFTheme.bgColor,
-        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
-            .apply(bodyColor: Colors.white),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        canvasColor: GFTheme.secondaryColor,
-      ),
+          scaffoldBackgroundColor: GFTheme.bgColor,
+          textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme)
+              .apply(bodyColor: Colors.black),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          canvasColor: GFTheme.secondaryColor,
+          inputDecorationTheme: InputDecorationTheme(
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: BorderSide(color: GFTheme.white1)),
+              labelStyle: TextStyle(color: GFTheme.primaryColor)),
+          outlinedButtonTheme: OutlinedButtonThemeData(
+              style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Colors.white),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                          side: BorderSide(width: 5, color: Colors.white)))))),
       title: "Home Automation",
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,

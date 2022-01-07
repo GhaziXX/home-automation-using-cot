@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/app/data/models/profile.dart';
@@ -7,6 +5,7 @@ import 'package:frontend/app/data/models/room.dart';
 import 'package:frontend/app/data/models/sensor.dart';
 import 'package:frontend/app/data/provider/api_services.dart';
 import 'package:frontend/app/global_widgets/snackbar.dart';
+import 'package:frontend/app/theme/color_theme.dart';
 
 import 'package:geolocator/geolocator.dart';
 
@@ -300,19 +299,13 @@ class _DashboradState extends State<Dashborad> {
                 TextField(
                   controller: _sensorNameController,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15)),
                     labelText: 'Sensor name',
                   ),
                 ),
                 SizedBox(height: size.height * 0.02),
                 TextFormField(
                   controller: _sensorPinController,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      labelText: "Sensor pin"),
+                  decoration: InputDecoration(labelText: "Sensor pin"),
                 ),
                 SizedBox(height: size.height * 0.02),
                 OutlinedButton(
@@ -323,15 +316,7 @@ class _DashboradState extends State<Dashborad> {
                       int sensorPin = int.parse(_sensorPinController.text);
                       GetIt.I<APIServices>().addConnectedObject(
                           roomId: roomId, objectId: sensorName, pin: sensorPin);
-                    },
-                    style: ButtonStyle(
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                    side: BorderSide(
-                                        color:
-                                            Theme.of(context).primaryColor))))),
+                    }),
                 SizedBox(
                   height: 100,
                 )

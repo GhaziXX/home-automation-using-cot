@@ -43,8 +43,8 @@ class Profile {
               : ""
           : "",
       permission: json.containsKey("message")
-          ? json["message"].containsKey("permission")
-              ? json["message"]["permission"]
+          ? json["message"].containsKey("permissions")
+              ? json["message"]["permissions"]
               : -1
           : -1,
       fullname: json.containsKey("message")

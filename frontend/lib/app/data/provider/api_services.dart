@@ -11,7 +11,6 @@ import 'package:frontend/app/oauth/oauth_lib.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-
 class APIServices {
   Future<Login> login({required email, required password}) async {
     try {
@@ -85,12 +84,12 @@ class APIServices {
       var resp = await GetIt.I<OAuthSettings>().authenticatedDio.get(
           "https://api.homeautomationcot.me/users?page=$page&limit=$limit",
           options: Options(contentType: request.contentType));
+      print(resp);
 
       return resp.data["message"].map<Profile>((e) {
         return Profile.fromJson({"ok": true, "message": e});
       }).toList();
     } on DioError catch (e) {
-      print(e.response);
       var data = {
         "ok": false,
       };
@@ -342,7 +341,7 @@ class APIServices {
       List<double> l = [res.data["message"]["lat"], res.data["message"]["lon"]];
       return l;
     } on DioError catch (e) {
-      return [0,0];
+      return [0, 0];
     }
   }
 

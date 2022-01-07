@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:frontend/app/data/models/room.dart';
 import 'package:frontend/app/data/models/sensor.dart';
 import 'package:frontend/app/data/provider/api_services.dart';
+import 'package:frontend/app/modules/list_users/views/list_users_view.dart';
 import 'package:get/get.dart';
 
-import 'package:frontend/app/modules/connected_device/views/connected_device_view.dart';
 import 'package:frontend/app/modules/home/views/dashboard_view.dart';
 import 'package:frontend/app/modules/home/views/settings_view.dart';
 import 'package:get_it/get_it.dart';
@@ -25,7 +25,7 @@ class HomeController extends GetxController {
   // the list of screens switched by bottom navBar
   final List<Widget> homeViews = [
     DashboardView(),
-    ConnectedDeviceView(),
+    ListUsersView(),
     SettingsView(),
   ];
 

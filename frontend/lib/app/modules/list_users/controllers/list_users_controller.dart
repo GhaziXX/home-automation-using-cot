@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-class ConnectedDeviceController extends GetxController {
+class ListUsersController extends GetxController {
   @override
   void onInit() {
     super.onInit();

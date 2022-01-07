@@ -1,8 +1,7 @@
 import 'package:frontend/app/modules/auth/auth.dart';
-import 'package:frontend/app/modules/auth/signin/views/signin_view.dart';
+import 'package:frontend/app/modules/list_users/bindings/list_users_binding.dart';
+import 'package:frontend/app/modules/list_users/views/list_users_view.dart';
 import 'package:get/get.dart';
-import 'package:frontend/app/modules/connected_device/bindings/connected_device_binding.dart';
-import 'package:frontend/app/modules/connected_device/views/connected_device_view.dart';
 
 import 'package:frontend/app/modules/home/bindings/home_binding.dart';
 import 'package:frontend/app/modules/home/views/home_view.dart';
@@ -27,8 +26,8 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.CONNECTED_DEVICE,
-      page: () => ConnectedDeviceView(),
-      binding: ConnectedDeviceBinding(),
+      page: () => ListUsersView(),
+      binding: ListUsersBinding(),
     ),
     GetPage(
       name: _Paths.SIGNIN,
