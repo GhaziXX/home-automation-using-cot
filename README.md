@@ -1,9 +1,10 @@
 <h1 align="center">
   <br>
-  Home Automation using CoT ---
-  Application of Cloud of Things on Home Automation ---
+  Home Automation using CoT
 </h1>
-
+<h3 align="center">
+  Application of Cloud of Things on Home Automation
+</h3>
 <div align="center">
   <h4>
     <a href="#Context">Context</a> |
