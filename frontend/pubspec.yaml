@@ -30,6 +30,7 @@ dependencies:
   the_validator: ^2.0.0
   responsive_sizer: ^2.0.1
   another_flushbar:
+  google_maps_flutter: ^2.1.1
 
 dev_dependencies:
   flutter_test:

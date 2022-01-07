@@ -12,7 +12,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:frontend/app/theme/color_theme.dart';
 import 'package:the_validator/the_validator.dart';
 
-import '../auth.dart';
+import '../../auth.dart';
 
 class SignupScreen extends StatefulWidget {
   final Function onLoginSelected;
@@ -42,8 +42,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void initState() {
-    // AuthNotifier authNotifier = context.read<AuthNotifier>();
-    // initCurrentUser(authNotifier);
     super.initState();
   }
 
@@ -96,7 +94,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         style: Theme.of(context)
                             .textTheme
                             .headline3
-                            ?.copyWith(color: Colors.white, fontSize: 16.sp),
+                            ?.copyWith(color: Colors.black, fontSize: 16.sp),
                       ),
                       SizedBox(
                         height: 8,
@@ -183,7 +181,7 @@ class _SignupScreenState extends State<SignupScreen> {
             controller: _firstnameController,
             keyboardType: TextInputType.name,
             validator: FieldValidator.required(message: "First name required"),
-            style: TextStyle(color: Colors.white, fontSize: 10.sp),
+            style: TextStyle(color: Colors.black, fontSize: 10.sp),
             decoration: const InputDecoration(
               //filled: true,
               labelText: "First name",
@@ -197,7 +195,7 @@ class _SignupScreenState extends State<SignupScreen> {
             controller: _lastnameController,
             keyboardType: TextInputType.name,
             validator: FieldValidator.required(message: "Last name required"),
-            style: TextStyle(color: Colors.white, fontSize: 10.sp),
+            style: TextStyle(color: Colors.black, fontSize: 10.sp),
             decoration: const InputDecoration(
               //filled: true,
               labelText: "Last name",
@@ -211,7 +209,7 @@ class _SignupScreenState extends State<SignupScreen> {
             controller: _usernameController,
             keyboardType: TextInputType.text,
             validator: FieldValidator.required(message: "Username required"),
-            style: TextStyle(color: Colors.white, fontSize: 10.sp),
+            style: TextStyle(color: Colors.black, fontSize: 10.sp),
             decoration: const InputDecoration(
               //filled: true,
               labelText: "Username",
@@ -225,7 +223,7 @@ class _SignupScreenState extends State<SignupScreen> {
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             validator: FieldValidator.email(),
-            style: TextStyle(color: Colors.white, fontSize: 10.sp),
+            style: TextStyle(color: Colors.black, fontSize: 10.sp),
             decoration: const InputDecoration(
               //filled: true,
               labelText: "Email",
@@ -236,7 +234,7 @@ class _SignupScreenState extends State<SignupScreen> {
             height: 32,
           ),
           TextFormField(
-            style: TextStyle(color: Colors.white, fontSize: 10.sp),
+            style: TextStyle(color: Colors.black, fontSize: 10.sp),
             controller: _passwordController,
             //autovalidateMode: AutovalidateMode.onUserInteraction,
             onChanged: (value) {
@@ -293,7 +291,7 @@ class _SignupScreenState extends State<SignupScreen> {
             height: 32,
           ),
           TextFormField(
-            style: TextStyle(color: Colors.white, fontSize: 10.sp),
+            style: TextStyle(color: Colors.black, fontSize: 10.sp),
             onChanged: (value) {
               if (value.isNotEmpty) {
                 setState(() {
@@ -353,7 +351,7 @@ class GoToLogin extends StatelessWidget {
         Text(
           "Already have an account?",
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontSize: textSize.sp,
           ),
         ),

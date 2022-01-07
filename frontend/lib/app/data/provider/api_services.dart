@@ -9,6 +9,7 @@ import 'package:frontend/app/data/models/sensor.dart';
 import 'package:frontend/app/data/models/signup.dart';
 import 'package:frontend/app/oauth/oauth_lib.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class APIServices {
   Future<Login> login({required email, required password}) async {
@@ -326,6 +327,40 @@ class APIServices {
       return sensors;
     } on DioError catch (e) {
       return [Sensor(value: null, id: null, roomId: null)];
+    }
+  }
+
+  Future<LatLng> getsetLocation() async {
+    final request = RequestOptions(
+      path: '/',
+      method: 'GET',
+      contentType: 'application/json',
+    );
+    final Dio dio = Dio();
+    try {
+      var res = await dio.request(
+          "https://api.homeautomationcot.me/getLocation",
+          options: Options(contentType: request.contentType));
+      return LatLng(res.data["message"]["lat"], res.data["message"]["lon"]);
+    } on DioError catch (e) {
+      return LatLng(0, 0);
+    }
+  }
+
+  Future<bool> setLocation({required LatLng location}) async {
+    final request = RequestOptions(
+      path: '/',
+      method: 'POST',
+      contentType: 'application/json',
+    );
+    final Dio dio = Dio();
+    try {
+      await dio.request("https://api.homeautomationcot.me/setLocation",
+          data: {"lat": location.latitude, "lon": location.longitude},
+          options: Options(contentType: request.contentType));
+      return true;
+    } on DioError catch (e) {
+      return false;
     }
   }
 }

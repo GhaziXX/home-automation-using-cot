@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/app/modules/auth/signin/views/signin_view.dart';
-import 'package:frontend/app/modules/auth/signup/signup_view.dart';
+import 'package:frontend/app/modules/auth/signup/views/signup_view.dart';
 import 'package:frontend/app/theme/color_theme.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -22,7 +22,6 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     Size _size = MediaQuery.of(context).size;
-    print(_size.width);
     return Scaffold(
       body: Container(
         width: _size.width,

@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: Theme.of(context)
                             .textTheme
                             .headline3
-                            ?.copyWith(color: Colors.white, fontSize: 16.sp),
+                            ?.copyWith(color: Colors.black, fontSize: 16.sp),
                       ),
                       SizedBox(
                         height: 8,
@@ -154,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
             controller: _emailController,
             validator: FieldValidator.email(),
             keyboardType: TextInputType.emailAddress,
-            style: TextStyle(color: Colors.white, fontSize: 10.sp),
+            style: TextStyle(color: Colors.black, fontSize: 10.sp),
             decoration: const InputDecoration(
               // filled: true,
               labelText: "Email",
@@ -179,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
             controller: _passwordController,
             obscureText: _isObscurePass,
             validator: FieldValidator.required(),
-            style: TextStyle(color: Colors.white, fontSize: 10.sp),
+            style: TextStyle(color: Colors.black, fontSize: 10.sp),
             decoration: InputDecoration(
               labelText: "Password",
               prefixIcon: Icon(Icons.lock_outline),
@@ -226,7 +226,7 @@ class GoToRegister extends StatelessWidget {
       children: [
         Text(
           "Don't have an account yet?",
-          style: TextStyle(color: Colors.white, fontSize: textSize.sp),
+          style: TextStyle(color: Colors.black, fontSize: textSize.sp),
         ),
         SizedBox(
           width: 8,
