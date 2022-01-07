@@ -8,13 +8,13 @@
 <div align="center">
   <h4>
     <a href="#Context">Context</a> |
-    <a href="#Live Demo">Live Demo</a> |
-    <a href="#InstallationGuide">Installation Guide</a> |
+    <a href="#Live-Demo">Live Demo</a> |
+    <a href="#Installation-Guide">Installation Guide</a> |
     <a href="#Technologies">Technologies</a> |
-    <a href="#Deployment Server">Deployment Server</a> |
-    <a href="#Certification and Grading">Certification and Grading</a> |
+    <a href="#Deployment-Server">Deployment Server</a> |
+    <a href="#Certification-and-Grading">Certification and Grading</a> |
    <a href="#Screenshots">Screenshots</a> |
-    <a href="#Further Readings">Further Readings</a> |
+    <a href="#Further-Readings">Further Readings</a> |
     <a href="#Contribution">Contribution</a> |
   </h4>
 </div>
