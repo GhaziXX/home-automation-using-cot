@@ -20,7 +20,6 @@ dependencies:
   google_fonts: ^2.1.0
   http: ^0.13.3
   lottie: ^1.0.1
-  mqtt_client: ^9.3.1
   adaptive_dialog: ^1.2.0
   flutter_secure_storage: ^5.0.2
   pkce: ^1.0.0+1
