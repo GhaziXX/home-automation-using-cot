@@ -222,8 +222,8 @@ class APIServices {
   }
 
   Future<String> setStateOfConnectedObject({
-    required String roomId,
-    required String objectId,
+    required String? roomId,
+    required String? objectId,
     required bool state,
   }) async {
     final request = RequestOptions(

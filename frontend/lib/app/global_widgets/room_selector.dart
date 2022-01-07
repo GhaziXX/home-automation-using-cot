@@ -36,12 +36,16 @@ class RoomSelector extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(15),
             ),
-            child: SvgPicture.asset(
-              roomImageURL!,
-              color: isSelected!
-                  ? Theme.of(context).scaffoldBackgroundColor
-                  : Theme.of(context).primaryColor,
-            ),
+            child: SvgPicture.asset(roomImageURL!,
+                color: isSelected!
+                    ? Theme.of(context).scaffoldBackgroundColor
+                    : Theme.of(context).primaryColor,
+                placeholderBuilder: (context) => SvgPicture.asset(
+                      'assets/icons/room.svg',
+                      color: isSelected!
+                          ? Theme.of(context).scaffoldBackgroundColor
+                          : Theme.of(context).primaryColor,
+                    )),
           ),
           SizedBox(height: Get.height * 0.01),
           Text(
