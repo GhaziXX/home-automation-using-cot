@@ -51,9 +51,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
     return Padding(
       padding: EdgeInsets.all(_size.height > 770
-          ? 64
+          ? 32
           : _size.height > 670
-              ? 24
+              ? 16
               : 16),
       child: Center(
         child: Card(

@@ -80,6 +80,7 @@ HTTPS was ensured using Let's Encrypt's Certbot, providing secure communication 
 The grading of the server was tested using [SSLlabs](https://www.ssllabs.com/), and we had a grade of A+.
 ![Alt text](./imgs/grade.png)
 ## Screenshots
+![Alt text](./imgs/application.png)
 ## Further Readings
 You can find more information and take a look at the architecture design with the following documents:
 -  [User Guide](docs/User%20Guide.pdf)
