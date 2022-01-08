@@ -9,7 +9,6 @@ app.use(bodyParser.urlencoded({
 app.use(cors());
 const path = require('path');
 require('dotenv').config();
-app.use("json");
 app.use(express.static(__dirname +'/web'));
 //set default message
 app.get(['/'], (req, res) => {
