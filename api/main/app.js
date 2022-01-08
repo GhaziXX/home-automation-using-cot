@@ -11,9 +11,10 @@ const path = require('path');
 require('dotenv').config();
 app.use(express.static(__dirname +'/web'));
 //set default message
-app.get(['/'], (req, res) => {
-    if (req.subdomains.includes('api') || req.subdomains.includes('mqtt')) {
-        res.status(401).json({
+app.get('/', (req, res) => {
+    console.log(req.subdomains);
+    if (req.subdomains.includes('api')) {
+        res.status(401).send({
             message: 'You do not have access rights'
         });
         return;
