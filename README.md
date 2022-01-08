@@ -29,7 +29,7 @@ This project aims to prototype a home automation system with as many appliances 
 - Scalability: The network needs to be scalable, which means that the possibility to add new objects to the IoT network should be easy, and the integration of the new object in the control application needs to be straightforward.
 ## Live Demo
 As for now, you can test the application by downloading the `.apk` file from the releases.
-Also, you can test the application directly from your browser at http://homeautomationcot.me/ or https://api.homeautomationcot.me/. (note that some features are mobile-specific, and not all can be tested via the web version.)
+Also, you can test the application directly from your browser at https://homeautomationcot.me/ or https://api.homeautomationcot.me/. (note that some features are mobile-specific, and not all can be tested via the web version.)
 ## Installation Guide
 We made sure that the architecture of the repository was well organized for users to test the project locally or build on it.
 If you want to run the application locally, please follow the following steps: 
