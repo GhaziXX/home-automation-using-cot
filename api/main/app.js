@@ -8,8 +8,19 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(cors());
 const path = require('path');
-require('dotenv').config()
-
+require('dotenv').config();
+app.use("json");
+app.use(express.static(__dirname +'/web'));
+//set default message
+app.get(['/'], (req, res) => {
+    if (req.subdomains.includes('api') || req.subdomains.includes('mqtt')) {
+        res.status(401).json({
+            message: 'You do not have access rights'
+        });
+        return;
+    }
+    res.sendFile(__dirname + '/web/index.html');
+});
 //connect to all databases
 require('./connection.pools')();
 require('../identity/models/identity.schema');
