@@ -86,5 +86,9 @@ You can find more information and take a look at the architecture design with th
 -  [User Guide](docs/User%20Guide.pdf)
 -  [Design Document](docs/Design%20Document.pdf)
 ## Contribution
-This project was developed by [Mohamed Karaa](https://github.com/mohamedkaraa) and me as part of our Cloud of Things project at Sup'Com.
+This project was developed as part of our Cloud of Things project at Sup'Com.
+
+<a href="https://github.com/GhaziXX/Home-Automation-using-CoT/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=GhaziXX/Home-Automation-using-CoT" width=100/>
+</a>
 
