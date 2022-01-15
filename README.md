@@ -15,7 +15,7 @@
     <a href="#Certification-and-Grading">Certification and Grading</a> |
    <a href="#Screenshots">Screenshots</a> |
     <a href="#Further-Readings">Further Readings</a> |
-    <a href="#Contribution">Contribution</a> |
+    <a href="#Contribution">Contribution</a>
   </h4>
 </div>
 <br>
