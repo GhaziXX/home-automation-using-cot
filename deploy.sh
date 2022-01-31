@@ -4,7 +4,7 @@
 sudo rm -r api
 echo "Folder removed"
 #Clone the repo
-git clone https://github.com/GhaziXX/Home-Automation-using-CoT.git /home/ghazi_tounsi/api
+git clone https://github.com/GhaziXX/home-automation-using-cot.git /home/ghazi_tounsi/api
 echo "Repo cloned succesfully"
 # copy the .env file
 cp /home/ghazi_tounsi/.env api/api/
