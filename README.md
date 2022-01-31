@@ -33,7 +33,7 @@ Also, you can test the application directly from your browser at https://homeaut
 ## Installation Guide
 We made sure that the architecture of the repository was well organized for users to test the project locally or build on it.
 If you want to run the application locally, please follow the following steps: 
-- Clone the repo: `git clone https://github.com/GhaziXX/Home-Automation-using-CoT.git`
+- Clone the repo: `git clone https://github.com/GhaziXX/home-automation-using-cot.git`
 - Install node RED on your Raspberry pi and then load the content of [flows.json](./iot/flows.JSON) into a new flow. Feel free to change the sensors and actuators pins, the MQTT broker, and the API link for getting a list of installed sensors.
 - Move into the [api](./api/) directory and run `npm install` to install the required dependencies. (Please ensure that you have **node.js** installed in your machine).
 - Open [env.config.js](./api/main/env.config.js) and set your settings (certificate path, MQTT broker settings, and you Mongodb link). 
